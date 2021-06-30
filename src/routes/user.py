@@ -9,8 +9,8 @@ app = FastAPI()
 auth_handler = AuthHandler()
 
 
-@app.post('/register', status_code=201)
-def register(typed: AuthRegister):
+@app.post('/users', status_code=201)
+def post_user(typed: AuthRegister):
 
     typedEmail = typed.email.lower()
     
@@ -37,8 +37,8 @@ def register(typed: AuthRegister):
     return users
 
 
-@app.post('/login')
-def login(typed: AuthLogin):
+@app.post('/auth')
+def auth(typed: AuthLogin):
     user = None
     id = -1
     for i, x in enumerate(users):
@@ -53,6 +53,6 @@ def login(typed: AuthLogin):
     return { 'token': token }
 
 
-@app.get('/home')
-def protected(user_id=Depends(auth_handler.auth_wrapper)):
+@app.get('/users')
+def get_user(user_id=Depends(auth_handler.auth_wrapper)):
     return { 'user': users[user_id] }
