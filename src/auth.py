@@ -1,11 +1,9 @@
-from fastapi import security
 import jwt
 from fastapi import HTTPException, Security
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from passlib.context import CryptContext
 from datetime import datetime, timedelta
 
-from passlib.utils.decor import deprecated_method
 
 
 class AuthHandler():
