@@ -1,58 +1,38 @@
-from fastapi import FastAPI, Depends, HTTPException
-from auth import AuthHandler
-from schema.user import AuthLogin, AuthRegister
-from database.users import users
- 
+from fastapi import FastAPI, Depends, HTTPException 
+from schema.users import *
+from crud import *
+from database.users import get_db
 
 
 app = FastAPI()
-auth_handler = AuthHandler()
 
 
-@app.post('/users', status_code=201)
-def post_user(typed: AuthRegister):
-
-    typedEmail = typed.email.lower()
-    
-    if any(x['email'] == typedEmail for x in users):
-        return ({
-            "status": 400,
-            "message": "Email already exists"
-        })
-    
-    typedPassword1 = typed.password1.lower()
-    typedPassword2 = typed.password2.lower()
-    
+@app.post('/users')
+def create_user(user: AuthRegister, db: Session = Depends(get_db)):
+    db_user = get_user_by_email(db, email=user.email)
+    if db_user:
+        raise HTTPException(status_code=400, detail="Email already registered")
+    typedPassword1 = user.password1.lower()
+    typedPassword2 = user.password2.lower()
     if typedPassword1 != typedPassword2:
-        return ({
-            "status": 400,
-            "message": "Password doesn't match"
-        })      
-    users.append({
-        "surname": typed.surname.lower(),
-        "fullname": typed.fullname.lower(),
-        "email": typedEmail,
-        "password": auth_handler.get_password_hash(typed.password1),  
-    })
+        raise HTTPException(status_code=400, detail="Password doesn't match")
+    return create_user(db, user)
+
+
+@app.get("/users/")
+def read_users(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
+    users = get_users(db, skip=skip, limit=limit)
     return users
 
 
-@app.post('/auth')
-def auth(typed: AuthLogin):
-    user = None
-    id = -1
-    for i, x in enumerate(users):
-        if x['email'] == typed.email:
-            user = x
-            id = i
-            break
-    
-    if (user is None) or (not auth_handler.verify_password(typed.password, user['password'])):
-        raise HTTPException(status_code=401, detail='Invalid username and/or password')
-    token = auth_handler.encode_token(id)
-    return { 'token': token }
-
-
-@app.get('/users')
-def get_user(user_id=Depends(auth_handler.auth_wrapper)):
-    return { 'user': users[user_id] }
+@app.post("/auth")
+def get_token_authenticate(typed: AuthLogin, db: Session = Depends(get_db)):
+    user = get_user_by_email(db, email=typed.email)
+    if user is None:
+        raise HTTPException(status_code=401, detail="Invalid email/password")
+    if (not auth_handler.verify_password(typed.password, user.email)):
+        raise HTTPException(status_code=401, detail="Invalid email/password")
+    token = auth_handler.encode_token(user.id)
+    return {
+        "token": token
+    }
