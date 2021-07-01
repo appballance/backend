@@ -1,8 +1,8 @@
 from sqlalchemy import Boolean, Column, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
-from database.users import dbConnection
+from database.users import Base
 
-class User(dbConnection):
+class User(Base):
     __tablename__ = "users"
 
     id = Column(Integer, primary_key=True, index=True)
@@ -17,7 +17,7 @@ class User(dbConnection):
     # def __str__(self) -> str:
     #     return f'{self.id} - {self.fullname}'
 
-class Identity(dbConnection):
+class Identity(Base):
     __tablename__ = "identity"
 
     id = Column(Integer, primary_key=True, index=True)
