@@ -1,10 +1,11 @@
 from pydantic import BaseModel
+# from typing import Optional
 
 
 class AuthLogin(BaseModel):
     email: str
     password: str
-    
+
 class AuthRegister(BaseModel):
     surname: str
     fullname: str
@@ -12,4 +13,10 @@ class AuthRegister(BaseModel):
     password1: str
     password2: str
 
-    
+
+# class IdentityBase(BaseModel):
+#     balance: Optional[int] = 0
+
+
+# class IdentityCreate(IdentityBase):
+#     pass
