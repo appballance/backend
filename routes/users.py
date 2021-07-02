@@ -1,5 +1,6 @@
 from fastapi import FastAPI, Depends, HTTPException, applications
 
+import uvicorn
 from schema.users import *
 from crud import *
 from models import users
@@ -40,3 +41,8 @@ def post_token_authenticate(typed: AuthLogin, db: Session = Depends(get_db)):
     return {
         "token": token
     }
+
+
+
+if __name__ == "__main__":
+    uvicorn.run(app, host="0.0.0.0", port=PORT_HEROKU)
