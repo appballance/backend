@@ -1,5 +1,4 @@
 from pydantic import BaseModel
-# from pylance import Optional
 
 
 class AuthLogin(BaseModel):
@@ -12,11 +11,3 @@ class AuthRegister(BaseModel):
     email: str
     password1: str
     password2: str
-
-
-# class IdentityBase(BaseModel):
-#     balance: Optional[int] = 0
-
-
-# class IdentityCreate(IdentityBase):
-#     pass
