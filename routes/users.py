@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Depends, HTTPException
+from fastapi import FastAPI, Depends, HTTPException, applications
 
 from schema.users import *
 from crud import *
@@ -8,6 +8,7 @@ from database.users import get_db, engine
 users.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
+application = app
 
 
 @app.post('/users')
