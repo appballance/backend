@@ -11,11 +11,6 @@ app = FastAPI()
 
 
 
-@app.get("/")
-def home():
-    return {"message":"Hello TutLinks.com"}
-
-
 @app.post('/users')
 def post_create_user(typed: AuthRegister, db: Session = Depends(get_db)) -> User:
     db_user = get_user_by_email(db, typed.email)
