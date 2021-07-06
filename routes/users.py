@@ -1,4 +1,5 @@
 from fastapi import FastAPI, Depends, HTTPException, applications
+from sqlalchemy.orm import Session
 
 from schema.users import *
 from crud import *
@@ -11,7 +12,7 @@ app = FastAPI()
 
 
 @app.post('/users')
-def post_create_user(typed: AuthRegister, db: Depends(get_db)) -> User:
+def post_create_user(typed: AuthRegister, db: Session = Depends(get_db)) -> User:
     db_user = get_user_by_email(db, typed.email)
     if db_user:
         raise HTTPException(status_code=400, detail="Email already registered")
@@ -21,12 +22,12 @@ def post_create_user(typed: AuthRegister, db: Depends(get_db)) -> User:
 
 
 @app.get("/users")
-def get_read_users(db: Depends(get_db), user_id: Depends(auth_handler.auth_wrapper)):
+def get_read_users(db: Session = Depends(get_db), user_id: int = Depends(auth_handler.auth_wrapper)):
     return get_user(db, user_id)
 
 
 @app.post("/auth")
-def post_token_authenticate(typed: AuthLogin, db: Depends(get_db)):
+def post_token_authenticate(typed: AuthLogin, db: Session = Depends(get_db)):
     user = get_user_by_email(db, email=typed.email)
     if user is None:
         raise HTTPException(status_code=401, detail="Invalid email/password")
