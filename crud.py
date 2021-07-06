@@ -21,10 +21,10 @@ def get_users(db: Session, skip: int = 0, limit: int = 100):
 
 def create_user(db: Session, typed: AuthRegister) -> User: 
     hashed_password = auth_handler.get_password_hash(typed.password1)
-    db_user = User(surname = typed.surname,
-                    fullname = typed.fullname,
-                    email = typed.email,
-                    hashed_password = hashed_password,)
+    db_user = User(surname=typed.surname,
+                   fullname=typed.fullname,
+                   email=typed.email,
+                   hashed_password=hashed_password,)
     db.add(db_user)
     db.commit()
     db.refresh(db_user)
