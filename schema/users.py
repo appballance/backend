@@ -5,6 +5,7 @@ class AuthLogin(BaseModel):
     email: str
     password: str
 
+
 class AuthRegister(BaseModel):
     surname: str
     fullname: str

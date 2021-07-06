@@ -2,6 +2,7 @@ from sqlalchemy import Boolean, Column, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
 from database.users import Base
 
+
 class User(Base):
     __tablename__ = "users"
 
@@ -14,8 +15,9 @@ class User(Base):
 
     identity = relationship("Identity", back_populates="user")
 
-    # def __str__(self) -> str:
-    #     return f'{self.id} - {self.fullname}'
+    def __str__(self) -> str:
+        return f'{self.id} - {self.fullname}'
+
 
 class Identity(Base):
     __tablename__ = "identity"
@@ -27,5 +29,5 @@ class Identity(Base):
 
     user = relationship("User", back_populates="identity")
 
-    # def __str__(self) -> str:
-    #     return f'{self.id} - {self.user_id}'
+    def __str__(self) -> str:
+        return f'{self.id} - {self.user_id}'
