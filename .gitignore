@@ -1,3 +1,6 @@
+#others
+.idea/
+
 .codeplayback
 bin/
 # Byte-compiled / optimized / DLL files
