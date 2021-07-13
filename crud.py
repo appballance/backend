@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
 
-from models.users import User
-from schema.users import AuthRegister 
+from models.user import User
+from schema.user import AuthRegister
 from auth import AuthHandler
 
 auth_handler = AuthHandler()
