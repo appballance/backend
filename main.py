@@ -1,7 +1,7 @@
 from fastapi import FastAPI
-from routes.user import user
+from routes import people
 
 balance = FastAPI(app_name="balance")
 
 
-balance.route(user)
+balance.include_router(people.router)

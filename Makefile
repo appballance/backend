@@ -19,13 +19,13 @@ run:
 
 define RUN_APP
 import os
-os.system('uvicorn main:balance --reload')
+os.system('uvicorn main:app --reload')
 
 endef
 export RUN_APP
 
 run_dev: run
 
-install_dev: clean uninstall_all
+install_dev: uninstall_all
 	pip install --upgrade pip
 	pip install --no-cache-dir -r requirements_dev.txt
