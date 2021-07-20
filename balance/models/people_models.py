@@ -1,6 +1,6 @@
 from sqlalchemy import Boolean, Column, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
-from balancelib.database.people import Base
+from balance.database.people import Base
 
 
 class User(Base):
@@ -15,8 +15,8 @@ class User(Base):
 
     identity = relationship("Identity", back_populates="user")
 
-    def __str__(self) -> str:
-        return f'{self.id} - {self.fullname}'
+    def to_json(self):
+        return vars(self)
 
 
 class Identity(Base):
@@ -28,6 +28,3 @@ class Identity(Base):
     is_active = Column(Boolean, default=True)
 
     user = relationship("User", back_populates="identity")
-
-    def __str__(self) -> str:
-        return f'{self.id} - {self.user_id}'
