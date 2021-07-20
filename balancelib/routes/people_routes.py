@@ -1,11 +1,10 @@
 from fastapi import APIRouter, Depends, HTTPException
 
-from schema.people import *
 from crud import *
-from models import people
-from database.people import get_db, engine
+from balancelib.models import people_models
+from balancelib.database.people import get_db, engine
 
-people.Base.metadata.create_all(bind=engine)
+people_models.Base.metadata.create_all(bind=engine)
 
 router = APIRouter()
 
