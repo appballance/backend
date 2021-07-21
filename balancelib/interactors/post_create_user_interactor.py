@@ -1,11 +1,12 @@
-from balance.models.people_models import User
+from balance.models.user_models import User
+
 from fastapi import HTTPException
 
 from balancelib.auth import AuthHandler
 
 
 class PostCreateUserResponseModel:
-    def __init__(self, user):
+    def __init__(self, user: User):
         self.user = user
 
     def __call__(self):
@@ -30,9 +31,8 @@ class PostCreateUserInteractor:
         return self.adapter.query(User).filter(
             User.email == self.request.email).first()
 
-    def _check_email_already_exists(self):
-        user = self._get_user_by_email()
-
+    @staticmethod
+    def _check_user_exists(user: User):
         if user:
             raise HTTPException(status_code=400, detail="Email already registered")
 
@@ -52,7 +52,8 @@ class PostCreateUserInteractor:
         return user
 
     def run(self):
-        self._check_email_already_exists()
+        user = self._get_user_by_email()
+        self._check_user_exists(user)
         self._password_match()
         user = self._create_user()
         response = PostCreateUserResponseModel(user)
