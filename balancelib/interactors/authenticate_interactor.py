@@ -5,10 +5,11 @@ from passlib.context import CryptContext
 from datetime import datetime, timedelta
 
 
-class AuthHandler:
+class AuthenticateInteractor:
     security = HTTPBearer()
-    pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-    secret = 'SECRET'
+    pwd_context = CryptContext(schemes=["bcrypt"],
+                               deprecated="auto")
+    secret3 = 'SECRET'
 
     def get_password_hash(self, password):
         return self.pwd_context.hash(password)
@@ -24,18 +25,22 @@ class AuthHandler:
         }
         return jwt.encode(
             payload,
-            self.secret,
+            self.secret3,
             algorithm='HS256'
         )
 
     def decode_token(self, token):
         try:
-            payload = jwt.decode(token, self.secret, algorithms=['HS256'])
+            payload = jwt.decode(token, self.secret3, algorithms=['HS256'])
             return payload['sub']
         except jwt.ExpiredSignatureError:
-            raise HTTPException(status_code=401, detail='Signature has expired')
+            raise HTTPException(status_code=401,
+                                detail='Signature has expired')
         except jwt.InvalidTokenError:
-            raise HTTPException(status_code=401, detail='Invalid token')
+            raise HTTPException(status_code=401,
+                                detail='Invalid token')
 
-    def auth_wrapper(self, auth: HTTPAuthorizationCredentials = Security(security)):
+    def auth_wrapper(self,
+                     auth: HTTPAuthorizationCredentials =
+                     Security(security)):
         return self.decode_token(auth.credentials)

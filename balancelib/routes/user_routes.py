@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends
 
-from balancelib.auth import AuthHandler
+from balancelib.interactors.authenticate_interactor import \
+    AuthenticateInteractor
 
 from sqlalchemy.orm import Session
 
@@ -38,7 +39,8 @@ def post_create_user(user: AuthRegister,
 
 
 @router.get('/users')
-def get_read_user(user_id: int = Depends(AuthHandler().auth_wrapper),
+def get_read_user(user_id: int = Depends(AuthenticateInteractor().
+                                         auth_wrapper),
                   adapter: Session = Depends(UserAlchemyAdapter)):
     request = GetReadUserRequestModel(user_id)
     interactor = GetReadUserInteractor(request, adapter)
