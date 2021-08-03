@@ -4,3 +4,7 @@ fastapi==0.65.2
 passlib==1.7.4
 bcrypt==3.2.0
 SQLAlchemy==1.4.20
+pytest==5.4.1
+pytest-cov==2.8.1
+flake8==3.7.9
+flake8-bandit==2.1.2

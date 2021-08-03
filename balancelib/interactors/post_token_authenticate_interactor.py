@@ -1,7 +1,8 @@
 from balance.schemas.user_schemas import AuthLogin
 from balance.models.user_models import User
 
-from balancelib.auth import AuthHandler
+from balancelib.interactors.authenticate_interactor import \
+    AuthenticateInteractor
 
 from sqlalchemy.orm import Session
 
@@ -36,15 +37,19 @@ class PostTokenAuthenticateInteractor:
     @staticmethod
     def _check_user_not_exists(user: User):
         if user is None:
-            raise HTTPException(status_code=401, detail="Invalid email/password")
+            raise HTTPException(status_code=401,
+                                detail="Invalid email/password")
 
     def _verify_password(self, user: User):
-        if not AuthHandler().verify_password(self.request.password, user.hashed_password):
-            raise HTTPException(status_code=401, detail="Invalid email/password")
+        if not AuthenticateInteractor().verify_password(
+                self.request.password,
+                user.hashed_password):
+            raise HTTPException(status_code=401,
+                                detail="Invalid email/password")
 
     @staticmethod
     def _generate_token(user: User):
-        token = AuthHandler().encode_token(user.id)
+        token = AuthenticateInteractor().encode_token(user.id)
         return {"token": token}
 
     def run(self):

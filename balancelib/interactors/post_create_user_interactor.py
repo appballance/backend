@@ -2,7 +2,8 @@ from balance.models.user_models import User
 
 from fastapi import HTTPException
 
-from balancelib.auth import AuthHandler
+from balancelib.interactors.authenticate_interactor import \
+    AuthenticateInteractor
 
 
 class PostCreateUserResponseModel:
@@ -34,14 +35,19 @@ class PostCreateUserInteractor:
     @staticmethod
     def _check_user_exists(user: User):
         if user:
-            raise HTTPException(status_code=400, detail="Email already registered")
+            raise HTTPException(status_code=400,
+                                detail="Email already registered")
 
     def _password_match(self):
-        if self.request.password1.lower() != self.request.password2.lower():
-            raise HTTPException(status_code=400, detail="Password doesn't match")
+        if self.request.password1.lower() != \
+                self.request.password2.lower():
+            raise HTTPException(status_code=400,
+                                detail="Password doesn't match")
 
     def _create_user(self):
-        hashed_password = AuthHandler().get_password_hash(self.request.password1)
+        hashed_password = AuthenticateInteractor().\
+            get_password_hash(self.request.password1)
+
         user = User(surname=self.request.surname,
                     fullname=self.request.fullname,
                     email=self.request.email,

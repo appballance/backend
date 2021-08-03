@@ -20,12 +20,13 @@ class GetReadUserRequestModel:
 class GetReadUserInteractor:
     def __init__(self,
                  request: GetReadUserRequestModel,
-                 adapter: Session):
+                 adapter: Session(UserAlchemyAdapter)):
         self.request = request
         self.adapter = adapter
 
     def _get_user(self):
-        return self.adapter.query(User).filter(User.id == self.request.user_id).first()
+        return self.adapter.query(User).\
+            filter(User.id == self.request.user_id).first()
 
     def run(self):
         user = self._get_user()
