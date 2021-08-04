@@ -32,8 +32,8 @@ class PostCreateUserInteractor:
         return self.adapter.query(User).filter(
             User.email == self.request.email).first()
 
-    @staticmethod
-    def _check_user_exists(user: User):
+    def _check_user_exists(self):
+        user = self._get_user_by_email()
         if user:
             raise HTTPException(status_code=400,
                                 detail="Email already registered")
@@ -58,8 +58,7 @@ class PostCreateUserInteractor:
         return user
 
     def run(self):
-        user = self._get_user_by_email()
-        self._check_user_exists(user)
+        self._check_user_exists()
         self._password_match()
         user = self._create_user()
         response = PostCreateUserResponseModel(user)
