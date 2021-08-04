@@ -1,6 +1,5 @@
 from unittest.mock import MagicMock, patch
-
-from pytest import fixture
+from pytest import fixture, raises
 
 from balancelib.interactors.post_create_user_interactor import (
     PostCreateUserResponseModel,
@@ -57,17 +56,57 @@ def test_post_create_user_interactor(interactor_factory):
     assert interactor.adapter == mock_adapter
 
 
-def test_post_create_user_interactor_get_user_by_email(interactor_factory):
+patch_root = 'balancelib.interactors.post_create_user_interactor'
+
+
+@patch(f'{patch_root}.User')
+@patch.object(PostCreateUserInteractor, '_get_user_by_email')
+def test_post_create_user_interactor_get_user_by_email(mock_get_user_by_email,
+                                                       mock_function_user,
+                                                       interactor_factory):
     interactor = interactor_factory()
 
     result = interactor._get_user_by_email()
 
-    mock_user = interactor.adapter.query().filter().first()
+    interactor.adapter.query(mock_function_user).\
+        filter(mock_function_user.email == interactor.request.email).\
+        first()
 
-    assert result == mock_user
+    interactor.adapter.query.assert_called_once_with(mock_function_user)
+
+    assert result == mock_get_user_by_email()
 
 
-patch_root = 'balancelib.interactors.post_create_user_interactor'
+@patch.object(PostCreateUserInteractor, '_get_user_by_email')
+def test_check_user_exists(mock_get_user_by_email,
+                           interactor_factory):
+    interactor = interactor_factory()
+    interactor._get_user_by_email.return_value = None
+
+    interactor._check_user_exists()
+
+    mock_get_user_by_email.assert_called_once()
+
+
+@patch.object(PostCreateUserInteractor, '_get_user_by_email')
+def test_check_user_exists_error(mock_get_user_by_email,
+                                 interactor_factory):
+    mock_get_user_by_email.return_value = MagicMock()
+    interactor = interactor_factory()
+
+    with raises(BaseException):
+        interactor._check_user_exists()
+
+
+def test_post_create_user_interactor_password_match(interactor_factory):
+    mock_request = MagicMock()
+    mock_request.password1.return_value = "a"
+    mock_request.password2.return_value = "b"
+
+    interactor = interactor_factory(mock_request=mock_request)
+
+    with raises(BaseException):
+        interactor._password_match()
 
 
 @patch(f'{patch_root}.User')
@@ -94,13 +133,22 @@ def test_post_create_user_interactor_create_user(mock_auth,
     assert result == mock_user
 
 
-@patch.object(PostCreateUserInteractor, '_get_user_by_email')
+@patch.object(PostCreateUserInteractor, '_create_user')
+@patch.object(PostCreateUserInteractor, '_password_match')
+@patch.object(PostCreateUserInteractor, '_check_user_exists')
 @patch(f'{patch_root}.PostCreateUserResponseModel')
 def test_post_create_user_interactor_run(mock_response,
-                                         mock_get_user_by_email,
+                                         mock_check_user_exists,
+                                         mock_password_match,
+                                         mock_create_user,
                                          interactor_factory):
+
     interactor = interactor_factory()
 
-    # result = interactor.run()
+    result = interactor.run()
 
-    mock_get_user_by_email.assert_called_once_with()
+    mock_check_user_exists.assert_called_once()
+    mock_password_match.assert_called_once()
+    mock_create_user.assert_called_once()
+
+    assert result == mock_response()
