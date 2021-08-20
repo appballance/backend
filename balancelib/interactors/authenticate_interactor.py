@@ -6,10 +6,11 @@ from datetime import datetime, timedelta
 
 
 class AuthenticateInteractor:
-    security = HTTPBearer()
-    pwd_context = CryptContext(schemes=["bcrypt"],
-                               deprecated="auto")
-    secret3 = 'SECRET'
+    def __init__(self):
+        self.secret3 = 'SECRET'
+        self.security = HTTPBearer()
+        self.pwd_context = CryptContext(schemes=["bcrypt"],
+                                        deprecated="auto")
 
     def get_password_hash(self, password):
         return self.pwd_context.hash(password)
@@ -40,7 +41,6 @@ class AuthenticateInteractor:
             raise HTTPException(status_code=401,
                                 detail='Invalid token')
 
-    def auth_wrapper(self,
-                     auth: HTTPAuthorizationCredentials =
-                     Security(security)):
+    def auth_wrapper(self):
+        auth: HTTPAuthorizationCredentials = Security(self.security)
         return self.decode_token(auth.credentials)
