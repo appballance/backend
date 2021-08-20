@@ -60,28 +60,17 @@ patch_root = 'balancelib.interactors.post_create_user_interactor'
 
 
 @patch(f'{patch_root}.User')
-@patch.object(PostCreateUserInteractor, '_get_user_by_email')
-def test_post_create_user_interactor_get_user_by_email(mock_get_user_by_email,
-                                                       mock_function_user,
+def test_post_create_user_interactor_get_user_by_email(mock_function_user,
                                                        interactor_factory):
     interactor = interactor_factory()
 
     result = interactor._get_user_by_email()
 
-    interactor.adapter.query(mock_function_user).\
-        filter(mock_function_user.email == interactor.request.email).\
-        first()
-
     interactor.adapter.query.assert_called_once_with(mock_function_user)
-
-    interactor.adapter.query().filter.assert_called_once_with(
-        mock_function_user.email == interactor.request.email)
-
+    interactor.adapter.query().filter.assert_called_once_with(False)
     interactor.adapter.query().filter().first.assert_called_once()
 
-    mock_get_user_by_email.assert_called_once()
-
-    assert result == mock_get_user_by_email()
+    assert result == interactor.adapter.query().filter().first()
 
 
 @patch.object(PostCreateUserInteractor, '_get_user_by_email')
