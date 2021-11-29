@@ -15,6 +15,20 @@ class User(Base):
 
     identity = relationship("Identity", back_populates="user")
 
+    def __init__(self,
+                 entity_id: str = None,
+                 surname: str = None,
+                 fullname: str = None,
+                 email: str = None,
+                 hashed_password: str = None,
+                 is_active: bool = None):
+        self.entity_id = entity_id
+        self.surnam = surname
+        self.fullname = fullname
+        self.email = email
+        self.hashed_password = hashed_password
+        self.is_active = is_active
+
     def to_json(self):
         return vars(self)
 
