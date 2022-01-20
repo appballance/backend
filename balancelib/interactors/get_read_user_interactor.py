@@ -1,5 +1,5 @@
-from balance.database.settings import UserAlchemyAdapter
-from balance.models.user_models import User
+from balance_domain.database.settings import UserAlchemyAdapter
+from balance_domain.models.user_models import User
 
 from sqlalchemy.orm import Session
 

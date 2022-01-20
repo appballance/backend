@@ -1,5 +1,5 @@
-from balance.schemas.user_schemas import AuthLogin
-from balance.models.user_models import User
+from balance_domain.schemas.user_schemas import AuthLogin
+from balance_domain.models.user_models import User
 
 from balancelib.interactors.authenticate_interactor import \
     AuthenticateInteractor

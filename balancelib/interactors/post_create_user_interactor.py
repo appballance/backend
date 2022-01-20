@@ -1,4 +1,4 @@
-from balance.models.user_models import User
+from balance_domain.models.user_models import User
 
 from fastapi import HTTPException
 

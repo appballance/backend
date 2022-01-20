@@ -5,9 +5,9 @@ from balancelib.interactors.authenticate_interactor import \
 
 from sqlalchemy.orm import Session
 
-from balance.schemas.user_schemas import AuthRegister, AuthLogin
-from balance.models import user_models
-from balance.database.settings import UserAlchemyAdapter, engine
+from balance_domain.schemas.user_schemas import AuthRegister, AuthLogin
+from balance_domain.models import user_models
+from balance_domain.database.settings import UserAlchemyAdapter, engine
 
 from balancelib.interactors.post_create_user_interactor import \
     (PostCreateUserRequestModel,
