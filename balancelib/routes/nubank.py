@@ -1,23 +1,26 @@
 import uuid
-import os
+from fastapi import APIRouter, Depends
+from sqlalchemy.orm import Session
 
-from fastapi import APIRouter
-from pynubank import Nubank
+from balance_domain.models import user_models
+from balance_domain.database.settings import UserAlchemyAdapter, engine
+
+from balancelib.interactors.authenticate_interactor import \
+    AuthenticateInteractor
 
 from balancelib.requests.nubank_request import (
     RequestSendCodeCertificate,
-    RequestAccount
 )
-
 from balancelib.interactors.post_generete_code_by_email import (
     PostGenerateCodeByEmailInteractor,
     PostGenerateCodeByEmailRequestModel
 )
-
 from balancelib.interactors.post_generate_certificate import (
     PostGenerateCertificateInteractor,
     PostGenerateCertificateRequestModel
 )
+
+user_models.Base.metadata.create_all(bind=engine)
 
 router = APIRouter()
 
@@ -32,7 +35,7 @@ class MyClass:
 myClass = MyClass()
 
 
-@router.post('/certificate/code')
+@router.post('/nubank/send-email-code')
 def post_generete_code_by_email(user: RequestSendCodeCertificate):
     request = PostGenerateCodeByEmailRequestModel(user)
     interactor = PostGenerateCodeByEmailInteractor(request)
@@ -43,27 +46,14 @@ def post_generete_code_by_email(user: RequestSendCodeCertificate):
     return result()
 
 
-@router.post('/certificate/{code_id}')
-def post_generate_certificate(code_id):
-    request = PostGenerateCertificateRequestModel(code_id)
-    interactor = PostGenerateCertificateInteractor(request, myClass.func)
+@router.post('/nubank/auth/{code_id}')
+def nubank_auth_code(
+        code_id,
+        user_id: int = Depends(AuthenticateInteractor().auth_wrapper),
+        adapter: Session = Depends(UserAlchemyAdapter)):
+    request = PostGenerateCertificateRequestModel(code_id, user_id)
+    interactor = PostGenerateCertificateInteractor(request, adapter, myClass.func)
 
     result = interactor.run()
 
     return result()
-
-
-@router.post('/account')
-def account(request: RequestAccount):
-    nu = Nubank()
-    certificate_path = f'certificate_{request.cpf}.p12'
-    refresh_token = nu.authenticate_with_cert(
-        cpf=request.cpf,
-        password=request.password,
-        cert_path=certificate_path
-    )
-
-    nu.authenticate_with_refresh_token(refresh_token, certificate_path)
-    account_statements = nu.get_account_statements()
-
-    return account_statements

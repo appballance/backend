@@ -45,13 +45,15 @@ class PostCreateUserInteractor:
                                 detail="Password doesn't match")
 
     def _create_user(self):
-        hashed_password = AuthenticateInteractor().\
+        hashed_password = AuthenticateInteractor(). \
             get_password_hash(self.request.password1)
 
-        user = User(surname=self.request.surname,
-                    fullname=self.request.fullname,
-                    email=self.request.email,
-                    hashed_password=hashed_password,)
+        user = User(
+            surname=self.request.surname,
+            fullname=self.request.fullname,
+            email=self.request.email,
+            hashed_password=hashed_password,
+        )
         self.adapter.add(user)
         self.adapter.commit()
         self.adapter.refresh(user)

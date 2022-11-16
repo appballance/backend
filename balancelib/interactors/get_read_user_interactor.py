@@ -1,15 +1,20 @@
 from balance_domain.database.settings import UserAlchemyAdapter
-from balance_domain.models.user_models import User
+from balance_domain.models.user_models import User, Bank
 
 from sqlalchemy.orm import Session
 
 
 class GetReadUserResponseModel:
-    def __init__(self, user: User):
+    def __init__(self, user: User, banks: list):
         self.user = user
+        self.banks = banks
 
     def __call__(self):
-        return self.user.to_json()
+        user = self.user.to_json()
+        return {
+            'surname': user['surname'],
+            'banks': self.banks
+        }
 
 
 class GetReadUserRequestModel:
@@ -25,10 +30,15 @@ class GetReadUserInteractor:
         self.adapter = adapter
 
     def _get_user(self):
-        return self.adapter.query(User).\
+        return self.adapter.query(User). \
             filter(User.id == self.request.user_id).first()
 
+    def _get_user_banks(self):
+        return self.adapter.query(Bank). \
+            filter(Bank.user_id == self.request.user_id).all()
+
     def run(self):
+        banks = [bank.to_json() for bank in self._get_user_banks()]
         user = self._get_user()
-        response = GetReadUserResponseModel(user)
+        response = GetReadUserResponseModel(user, banks)
         return response
