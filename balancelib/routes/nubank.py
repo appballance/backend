@@ -32,12 +32,6 @@ class MyClass:
 myClass = MyClass()
 
 
-def save_certificate(cert, name):
-    path = os.path.join(os.getcwd(), name)
-    with open(path, 'wb') as cert_file:
-        cert_file.write(cert.export())
-
-
 @router.post('/certificate/code')
 def post_generete_code_by_email(user: RequestSendCodeCertificate):
     request = PostGenerateCodeByEmailRequestModel(user)
