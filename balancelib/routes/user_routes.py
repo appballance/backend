@@ -21,13 +21,12 @@ from balancelib.interactors.post_token_authenticate_interactor import \
     (PostTokenAuthenticateRequestModel,
      PostTokenAuthenticateInteractor)
 
-
 user_models.Base.metadata.create_all(bind=engine)
 
 router = APIRouter()
 
 
-@router.post('/users')
+@router.post('/user')
 def post_create_user(user: AuthRegister,
                      adapter: Session = Depends(UserAlchemyAdapter)):
     request = PostCreateUserRequestModel(user)
@@ -38,10 +37,10 @@ def post_create_user(user: AuthRegister,
     return result()
 
 
-@router.get('/users')
-def get_read_user(user_id: int = Depends(AuthenticateInteractor().
-                                         auth_wrapper),
-                  adapter: Session = Depends(UserAlchemyAdapter)):
+@router.get('/user')
+def get_read_user(
+        user_id: int = Depends(AuthenticateInteractor().auth_wrapper),
+        adapter: Session = Depends(UserAlchemyAdapter)):
     request = GetReadUserRequestModel(user_id)
     interactor = GetReadUserInteractor(request, adapter)
 
