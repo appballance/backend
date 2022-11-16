@@ -59,6 +59,6 @@ tests:
 	@flake8 tests/ --ignore=S101,S311,F811,S605,S607
 	@echo "\033[32mTudo certo!"
 
-install_dev: uninstall_all ## instala as dependências de desenvolvimento
+install: uninstall_all ## instala as dependências
 	pip install --upgrade pip
-	pip install --no-cache-dir -r requirements_dev.txt
+	pip install -r requirements.txt
