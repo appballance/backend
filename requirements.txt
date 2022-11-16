@@ -29,3 +29,5 @@ urllib3==1.26.5
 uvicorn==0.14.0
 virtualenv==20.0.31
 virtualenv-clone==0.5.4
+pynubank~=2.21.1
+balance-domain==0.0.11
