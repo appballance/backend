@@ -1,13 +1,15 @@
 import uuid
 from pynubank.utils.certificate_generator import CertificateGenerator
 
+from balancelib.interactors.response_api_interactor import ResponseSuccess
+
 
 class PostGenerateCodeByEmailResponseModel:
     def __init__(self, certificate):
         self.certificate = certificate
 
     def __call__(self):
-        return self.certificate
+        return ResponseSuccess(self.certificate)
 
 
 class PostGenerateCodeByEmailRequestModel:
@@ -36,8 +38,5 @@ class PostGenerateCodeByEmailInteractor:
 
     def run(self):
         self._generete_code()
-        response = PostGenerateCodeByEmailResponseModel({
-            "status_code": 201,
-            "message": "success",
-        })
+        response = PostGenerateCodeByEmailResponseModel({})
         return response

@@ -1,6 +1,5 @@
-import uuid
 import os
-
+import uuid
 from fastapi import HTTPException
 from pynubank import Nubank
 from pynubank.utils.certificate_generator import CertificateGenerator
@@ -8,13 +7,18 @@ from pynubank.utils.certificate_generator import CertificateGenerator
 from balance_domain.models.user_models import Bank
 from balance_domain.database.settings import UserAlchemyAdapter
 
+from balancelib.interactors.response_api_interactor import (
+    ResponseSuccess,
+    ResponseError
+)
+
 
 class PostGenerateCertificateResponseModel:
     def __init__(self, bank: Bank):
         self.bank = bank
 
     def __call__(self):
-        return self.bank.to_json()
+        return ResponseSuccess(self.bank.to_json())
 
 
 class PostGenerateCertificateRequestModel:
@@ -35,8 +39,8 @@ class PostGenerateCertificateInteractor:
 
     def _check_send_code_by_email(self):
         if self.certificate is None:
-            raise HTTPException(status_code=400,
-                                detail="Generate the code of certificate first")
+            raise ResponseError(status_code=400,
+                                message="Generate the code of certificate first")
         self.cpf = self.certificate.login
         self.password = self.certificate.password
 

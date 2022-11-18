@@ -1,12 +1,16 @@
+from sqlalchemy.orm import Session
+
 from balance_domain.schemas.user_schemas import AuthLogin
 from balance_domain.models.user_models import User
 
-from balancelib.interactors.authenticate_interactor import \
-    AuthenticateInteractor
+from balancelib.interactors.authenticate_interactor import (
+    AuthenticateInteractor,
+)
 
-from sqlalchemy.orm import Session
-
-from fastapi import HTTPException
+from balancelib.interactors.response_api_interactor import (
+    ResponseError,
+    ResponseSuccess,
+)
 
 
 class PostTokenAuthenticateResponseModel:
@@ -14,7 +18,9 @@ class PostTokenAuthenticateResponseModel:
         self.token = token
 
     def __call__(self):
-        return self.token
+        return ResponseSuccess({
+            "token": self.token
+        })
 
 
 class PostTokenAuthenticateRequestModel:
@@ -37,20 +43,18 @@ class PostTokenAuthenticateInteractor:
     @staticmethod
     def _check_user_not_exists(user: User):
         if user is None:
-            raise HTTPException(status_code=401,
-                                detail="Invalid email/password")
+            raise ResponseError(message="Invalid email/password", status_code=401)
 
     def _verify_password(self, user: User):
         if not AuthenticateInteractor().verify_password(
                 self.request.password,
                 user.hashed_password):
-            raise HTTPException(status_code=401,
-                                detail="Invalid email/password")
+            raise ResponseError(message="Invalid email/password", status_code=401)
 
     @staticmethod
     def _generate_token(user: User):
         token = AuthenticateInteractor().encode_token(user.id)
-        return {"token": token}
+        return token
 
     def run(self):
         user = self._get_user_by_email()

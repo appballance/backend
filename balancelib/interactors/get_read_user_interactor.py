@@ -1,7 +1,9 @@
+from sqlalchemy.orm import Session
+
 from balance_domain.database.settings import UserAlchemyAdapter
 from balance_domain.models.user_models import User, Bank
 
-from sqlalchemy.orm import Session
+from balancelib.interactors.response_api_interactor import ResponseSuccess
 
 
 class GetReadUserResponseModel:
@@ -11,10 +13,10 @@ class GetReadUserResponseModel:
 
     def __call__(self):
         user = self.user.to_json()
-        return {
+        return ResponseSuccess({
             'surname': user['surname'],
             'banks': self.banks
-        }
+        })
 
 
 class GetReadUserRequestModel:

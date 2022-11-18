@@ -1,9 +1,12 @@
 from balance_domain.models.user_models import User
 
-from fastapi import HTTPException
-
 from balancelib.interactors.authenticate_interactor import \
     AuthenticateInteractor
+
+from balancelib.interactors.response_api_interactor import (
+    ResponseSuccess,
+    ResponseError
+)
 
 
 class PostCreateUserResponseModel:
@@ -11,7 +14,7 @@ class PostCreateUserResponseModel:
         self.user = user
 
     def __call__(self):
-        return self.user.to_json()
+        return ResponseSuccess(self.user.to_json())
 
 
 class PostCreateUserRequestModel:
@@ -35,14 +38,14 @@ class PostCreateUserInteractor:
     def _check_user_exists(self):
         user = self._get_user_by_email()
         if user:
-            raise HTTPException(status_code=400,
-                                detail="Email already registered")
+            raise ResponseError(status_code=400,
+                                message="Email already registered")
 
     def _password_match(self):
         if self.request.password1.lower() != \
                 self.request.password2.lower():
-            raise HTTPException(status_code=400,
-                                detail="Password doesn't match")
+            raise ResponseError(status_code=400,
+                                message="Password doesn't match")
 
     def _create_user(self):
         hashed_password = AuthenticateInteractor(). \
