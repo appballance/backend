@@ -5,11 +5,13 @@ from balancelib.interactors.response_api_interactor import ResponseSuccess
 
 
 class PostGenerateCodeByEmailResponseModel:
-    def __init__(self, certificate):
-        self.certificate = certificate
+    def __init__(self, send_to):
+        self.send_to = send_to
 
     def __call__(self):
-        return ResponseSuccess(self.certificate)
+        return ResponseSuccess({
+            "email": self.send_to,
+        })
 
 
 class PostGenerateCodeByEmailRequestModel:
@@ -31,12 +33,12 @@ class PostGenerateCodeByEmailInteractor:
         )
 
     def _generete_code(self):
-        self.certificate.request_code()
+        return self.certificate.request_code()
 
     def _get_instance_certificate(self):
         return self.certificate
 
     def run(self):
-        self._generete_code()
-        response = PostGenerateCodeByEmailResponseModel({})
+        send_to = self._generete_code()
+        response = PostGenerateCodeByEmailResponseModel(send_to)
         return response
