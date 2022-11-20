@@ -1,6 +1,6 @@
 appdirs==1.4.4
 asgiref==3.4.1
-balance-domain==0.0.19
+balance-domain==0.1.26
 bcrypt==3.2.0
 certifi==2020.6.20
 cffi==1.14.6
@@ -40,3 +40,6 @@ uvicorn==0.14.0
 virtualenv==20.0.31
 virtualenv-clone==0.5.4
 wrapt==1.14.1
+python-dotenv==0.21.0
+PyMySQL==1.0.2
+
