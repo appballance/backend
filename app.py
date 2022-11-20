@@ -3,7 +3,7 @@ from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 
 from balancelib.interactors.response_api_interactor import ResponseError
-from balancelib.routes import nubank
+from balancelib.routes import nubank_routes
 from balancelib.routes import user_routes
 
 
@@ -26,4 +26,4 @@ app.add_middleware(
 )
 
 app.include_router(user_routes.router)
-app.include_router(nubank.router)
+app.include_router(nubank_routes.router)
