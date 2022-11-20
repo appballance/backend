@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 
-from balance_domain.schemas.user_schemas import AuthLogin
+from balancelib.schemas.user_schemas import AuthLogin
 from balance_domain.models.user_models import User
 
 from balancelib.interactors.authenticate_interactor import (
