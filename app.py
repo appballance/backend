@@ -1,10 +1,11 @@
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
+from fastapi.middleware.cors import CORSMiddleware
 
 from balancelib.interactors.response_api_interactor import ResponseError
 from balancelib.routes import nubank
 from balancelib.routes import user_routes
-from fastapi.middleware.cors import CORSMiddleware
+
 
 app = FastAPI(app_name="balance")
 
