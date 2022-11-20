@@ -1,6 +1,6 @@
 import os
 import uuid
-from fastapi import HTTPException
+
 from pynubank import Nubank
 from pynubank.utils.certificate_generator import CertificateGenerator
 
@@ -68,10 +68,7 @@ class PostGenerateCertificateInteractor:
 
     def _conect_with_nubank(self, token_nubank):
         bank = Bank(
-            balance=0,
             token=token_nubank,
-            cpf=self.certificate.login,
-            password=self.certificate.password,
             user_id=self.request.user_id
         )
         self.adapter.add(bank)
@@ -82,7 +79,7 @@ class PostGenerateCertificateInteractor:
     def run(self):
         self._check_send_code_by_email()
 
-        certificate_path = f'certificate_{self.cpf}.p12'
+        certificate_path = f'certificate_{self.request.user_id}.p12'
         certificate_file = self._get_certificate()
 
         self._save_certificate(certificate_file, certificate_path)
