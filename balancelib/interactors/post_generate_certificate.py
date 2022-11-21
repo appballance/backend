@@ -1,20 +1,20 @@
 import os
 import uuid
 
+# move to service ?
 from pynubank import Nubank
 from pynubank.utils.certificate_generator import CertificateGenerator
-
-from balance_domain.models.user_models import Bank
-from balance_domain.database.settings import UserAlchemyAdapter
 
 from balancelib.interactors.response_api_interactor import (
     ResponseSuccess,
     ResponseError
 )
 
+from balance_service.adapters.bank_alchemy_adapter import BankAlchemyAdapter
+
 
 class PostGenerateCertificateResponseModel:
-    def __init__(self, bank: Bank):
+    def __init__(self, bank):
         self.bank = bank
 
     def __call__(self):
@@ -31,7 +31,7 @@ class PostGenerateCertificateRequestModel:
 class PostGenerateCertificateInteractor:
     def __init__(self,
                  request: PostGenerateCertificateRequestModel,
-                 adapter: UserAlchemyAdapter,
+                 adapter: BankAlchemyAdapter(),
                  certificate: CertificateGenerator):
         self.request = request
         self.adapter = adapter
@@ -67,13 +67,10 @@ class PostGenerateCertificateInteractor:
         return token_nubank
 
     def _conect_with_nubank(self, token_nubank):
-        bank = Bank(
+        bank = self.adapter.create(
             token=token_nubank,
             user_id=self.request.user_id
         )
-        self.adapter.add(bank)
-        self.adapter.commit()
-        self.adapter.refresh(bank)
         return bank
 
     def run(self):

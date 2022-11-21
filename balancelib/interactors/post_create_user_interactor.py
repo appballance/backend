@@ -1,4 +1,4 @@
-from balance_domain.models.user_models import User
+from balance_service.adapters.user_alchemy_adapter import UserAlchemyAdapter
 
 from balancelib.interactors.authenticate_interactor import \
     AuthenticateInteractor
@@ -10,7 +10,7 @@ from balancelib.interactors.response_api_interactor import (
 
 
 class PostCreateUserResponseModel:
-    def __init__(self, user: User):
+    def __init__(self, user):
         self.user = user
 
     def __call__(self):
@@ -27,13 +27,14 @@ class PostCreateUserRequestModel:
 
 
 class PostCreateUserInteractor:
-    def __init__(self, request, adapter):
+    def __init__(self,
+                 request: PostCreateUserRequestModel,
+                 adapter: UserAlchemyAdapter()):
         self.request = request
         self.adapter = adapter
 
     def _get_user_by_email(self):
-        return self.adapter.query(User).filter(
-            User.email == self.request.email).first()
+        return self.adapter.get_by_email(user_email=self.request.email)
 
     def _check_user_exists(self):
         user = self._get_user_by_email()
@@ -51,15 +52,12 @@ class PostCreateUserInteractor:
         hashed_password = AuthenticateInteractor(). \
             get_password_hash(self.request.password1)
 
-        user = User(
+        user = self.adapter.create(
             surname=self.request.surname,
             fullname=self.request.fullname,
             email=self.request.email,
             hashed_password=hashed_password,
         )
-        self.adapter.add(user)
-        self.adapter.commit()
-        self.adapter.refresh(user)
         return user
 
     def run(self):

@@ -1,37 +1,40 @@
 from fastapi import APIRouter, Depends
 
-from balancelib.interactors.authenticate_interactor import \
-    AuthenticateInteractor
+from balancelib.interactors.authenticate_interactor import (
+    AuthenticateInteractor,
+)
 
-from sqlalchemy.orm import Session
+from balancelib.interactors.post_create_user_interactor import (
+    PostCreateUserRequestModel,
+    PostCreateUserInteractor
+)
 
-from balance_domain.models import user_models
-from balance_domain.database.settings import UserAlchemyAdapter, engine
+from balancelib.interactors.get_read_user_interactor import (
+    GetReadUserRequestModel,
+    GetReadUserInteractor,
+)
 
-from balancelib.schemas.user_schemas import AuthRegister, AuthLogin
+from balancelib.interactors.post_token_authenticate_interactor import (
+    PostTokenAuthenticateRequestModel,
+    PostTokenAuthenticateInteractor,
+)
 
-from balancelib.interactors.post_create_user_interactor import \
-    (PostCreateUserRequestModel,
-     PostCreateUserInteractor)
+from balancelib.schemas.user_schemas import (
+    AuthRegister,
+    AuthLogin,
+)
 
-from balancelib.interactors.get_read_user_interactor import \
-    (GetReadUserRequestModel,
-     GetReadUserInteractor)
+from balance_service.adapters.user_alchemy_adapter import UserAlchemyAdapter
+from balance_service.adapters.bank_alchemy_adapter import BankAlchemyAdapter
 
-from balancelib.interactors.post_token_authenticate_interactor import \
-    (PostTokenAuthenticateRequestModel,
-     PostTokenAuthenticateInteractor)
-
-user_models.Base.metadata.create_all(bind=engine)
 
 router = APIRouter()
 
 
 @router.post('/user')
-def post_create_user(user: AuthRegister,
-                     adapter: Session = Depends(UserAlchemyAdapter)):
+def post_create_user(user: AuthRegister):
     request = PostCreateUserRequestModel(user)
-    interactor = PostCreateUserInteractor(request, adapter)
+    interactor = PostCreateUserInteractor(request, UserAlchemyAdapter())
 
     result = interactor.run()
 
@@ -40,10 +43,9 @@ def post_create_user(user: AuthRegister,
 
 @router.get('/user')
 def get_read_user(
-        user_id: int = Depends(AuthenticateInteractor().auth_wrapper),
-        adapter: Session = Depends(UserAlchemyAdapter)):
+        user_id: int = Depends(AuthenticateInteractor().auth_wrapper)):
     request = GetReadUserRequestModel(user_id)
-    interactor = GetReadUserInteractor(request, adapter)
+    interactor = GetReadUserInteractor(request, UserAlchemyAdapter(), BankAlchemyAdapter())
 
     result = interactor.run()
 
@@ -51,10 +53,9 @@ def get_read_user(
 
 
 @router.post('/auth')
-def post_token_authenticate(user: AuthLogin,
-                            adapter: Session = Depends(UserAlchemyAdapter)):
+def post_token_authenticate(user: AuthLogin):
     request = PostTokenAuthenticateRequestModel(user)
-    interactor = PostTokenAuthenticateInteractor(request, adapter)
+    interactor = PostTokenAuthenticateInteractor(request, UserAlchemyAdapter())
 
     result = interactor.run()
 

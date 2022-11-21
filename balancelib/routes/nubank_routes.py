@@ -1,12 +1,10 @@
 import uuid
 from fastapi import APIRouter, Depends
-from sqlalchemy.orm import Session
 
-from balance_domain.models import user_models
-from balance_domain.database.settings import UserAlchemyAdapter, engine
 
-from balancelib.interactors.authenticate_interactor import \
-    AuthenticateInteractor
+from balancelib.interactors.authenticate_interactor import (
+    AuthenticateInteractor,
+)
 
 from balancelib.requests.nubank_request import (
     RequestSendCodeCertificate,
@@ -20,7 +18,8 @@ from balancelib.interactors.post_generate_certificate import (
     PostGenerateCertificateRequestModel
 )
 
-user_models.Base.metadata.create_all(bind=engine)
+from balance_service.adapters.bank_alchemy_adapter import BankAlchemyAdapter
+
 
 router = APIRouter()
 
@@ -49,9 +48,9 @@ def post_generete_code_by_email(user: RequestSendCodeCertificate):
 @router.post('/nubank/auth/{code_id}')
 def nubank_auth_code(
         code_id,
-        user_id: int = Depends(AuthenticateInteractor().auth_wrapper),
-        adapter: Session = Depends(UserAlchemyAdapter)):
+        user_id: int = Depends(AuthenticateInteractor().auth_wrapper)):
     request = PostGenerateCertificateRequestModel(code_id, user_id)
+    adapter = BankAlchemyAdapter()
     interactor = PostGenerateCertificateInteractor(request, adapter, myClass.func)
 
     result = interactor.run()

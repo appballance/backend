@@ -1,21 +1,23 @@
-from sqlalchemy.orm import Session
-
-from balance_domain.database.settings import UserAlchemyAdapter
-from balance_domain.models.user_models import User, Bank
+from fastapi import Depends
 
 from balancelib.interactors.response_api_interactor import ResponseSuccess
+from balance_domain.models.user_models import Bank
+
+from balance_service.adapters.user_alchemy_adapter import UserAlchemyAdapter
+from balance_service.adapters.bank_alchemy_adapter import BankAlchemyAdapter
 
 
 class GetReadUserResponseModel:
-    def __init__(self, user: User, banks: list):
+    def __init__(self, user, banks):
         self.user = user
         self.banks = banks
 
     def __call__(self):
         user = self.user.to_json()
+        banks = [bank.to_json() for bank in self.banks]
         return ResponseSuccess({
             'surname': user['surname'],
-            'banks': self.banks
+            'banks': banks
         })
 
 
@@ -27,20 +29,20 @@ class GetReadUserRequestModel:
 class GetReadUserInteractor:
     def __init__(self,
                  request: GetReadUserRequestModel,
-                 adapter: Session(UserAlchemyAdapter)):
+                 user_adapter: UserAlchemyAdapter(),
+                 bank_adapter: BankAlchemyAdapter()):
         self.request = request
-        self.adapter = adapter
+        self.user_adapter = user_adapter
+        self.bank_adapter = bank_adapter
 
     def _get_user(self):
-        return self.adapter.query(User). \
-            filter(User.id == self.request.user_id).first()
+        return self.user_adapter.get_by_id(user_id=self.request.user_id)
 
     def _get_user_banks(self):
-        return self.adapter.query(Bank). \
-            filter(Bank.user_id == self.request.user_id).all()
+        return self.bank_adapter.get_by_user_id(user_id=self.request.user_id)
 
     def run(self):
-        banks = [bank.to_json() for bank in self._get_user_banks()]
+        banks = self._get_user_banks()
         user = self._get_user()
         response = GetReadUserResponseModel(user, banks)
         return response

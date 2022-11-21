@@ -1,7 +1,7 @@
-from sqlalchemy.orm import Session
-
 from balancelib.schemas.user_schemas import AuthLogin
 from balance_domain.models.user_models import User
+
+from balance_service.adapters.user_alchemy_adapter import UserAlchemyAdapter
 
 from balancelib.interactors.authenticate_interactor import (
     AuthenticateInteractor,
@@ -32,13 +32,12 @@ class PostTokenAuthenticateRequestModel:
 class PostTokenAuthenticateInteractor:
     def __init__(self,
                  request: PostTokenAuthenticateRequestModel,
-                 adapter: Session):
+                 adapter: UserAlchemyAdapter()):
         self.request = request
         self.adapter = adapter
 
     def _get_user_by_email(self):
-        return self.adapter.query(User).filter(
-            User.email == self.request.email).first()
+        return self.adapter.get_by_email(self.request.email)
 
     @staticmethod
     def _check_user_not_exists(user: User):
