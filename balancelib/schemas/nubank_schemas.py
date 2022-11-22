@@ -4,9 +4,15 @@ from pydantic import BaseModel
 class RequestSendCodeCertificate(BaseModel):
     cpf: str
     password: str
+    number: str
     device_id: str
 
 
 class RequestAccount(BaseModel):
     cpf: str
     password: str
+
+
+class RequestBank(BaseModel):
+    code_id: str
+    number: str

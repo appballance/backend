@@ -22,9 +22,9 @@ class PostGenerateCertificateResponseModel:
 
 
 class PostGenerateCertificateRequestModel:
-    def __init__(self, code_id, user_id):
+    def __init__(self, bank, user_id):
         self.encrypted_code = str(uuid.uuid4())  # alert
-        self.code_id = code_id
+        self.bank = bank
         self.user_id = user_id
 
 
@@ -46,7 +46,7 @@ class PostGenerateCertificateInteractor:
 
     def _get_certificate(self):
         self.cert1, _ = self.certificate.exchange_certs(
-            code=self.request.code_id
+            code=self.request.bank.code_id
         )
         return self.cert1
 
@@ -69,7 +69,8 @@ class PostGenerateCertificateInteractor:
     def _conect_with_nubank(self, token_nubank):
         bank = self.adapter.create(
             token=token_nubank,
-            user_id=self.request.user_id
+            number=self.request.bank.number,
+            user_id=self.request.user_id,
         )
         return bank
 

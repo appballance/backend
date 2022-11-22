@@ -6,8 +6,9 @@ from balancelib.interactors.authenticate_interactor import (
     AuthenticateInteractor,
 )
 
-from balancelib.requests.nubank_request import (
+from balancelib.schemas.nubank_schemas import (
     RequestSendCodeCertificate,
+    RequestBank,
 )
 from balancelib.interactors.post_generete_code_by_email import (
     PostGenerateCodeByEmailInteractor,
@@ -35,9 +36,11 @@ myClass = MyClass()
 
 
 @router.post('/nubank/send-email-code')
-def post_generete_code_by_email(user: RequestSendCodeCertificate):
-    request = PostGenerateCodeByEmailRequestModel(user)
-    interactor = PostGenerateCodeByEmailInteractor(request)
+def post_generete_code_by_email(
+        bank: RequestSendCodeCertificate,
+        user_id: int = Depends(AuthenticateInteractor().auth_wrapper)):
+    request = PostGenerateCodeByEmailRequestModel(bank, user_id)
+    interactor = PostGenerateCodeByEmailInteractor(request, BankAlchemyAdapter())
 
     result = interactor.run()
     myClass.func = interactor._get_instance_certificate()
@@ -45,11 +48,11 @@ def post_generete_code_by_email(user: RequestSendCodeCertificate):
     return result()
 
 
-@router.post('/nubank/auth/{code_id}')
+@router.post('/nubank/auth')
 def nubank_auth_code(
-        code_id,
+        bank: RequestBank,
         user_id: int = Depends(AuthenticateInteractor().auth_wrapper)):
-    request = PostGenerateCertificateRequestModel(code_id, user_id)
+    request = PostGenerateCertificateRequestModel(bank, user_id)
     adapter = BankAlchemyAdapter()
     interactor = PostGenerateCertificateInteractor(request, adapter, myClass.func)
 
