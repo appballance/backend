@@ -5,12 +5,14 @@ import uuid
 from pynubank import Nubank
 from pynubank.utils.certificate_generator import CertificateGenerator
 
+from database.adapters.bank import BankAlchemyAdapter
+
 from balancelib.interactors.response_api_interactor import (
     ResponseSuccess,
     ResponseError
 )
 
-from balance_service.adapters.bank_alchemy_adapter import BankAlchemyAdapter
+from balance_domain.entities.bank import BankEntity
 
 
 class PostGenerateCertificateResponseModel:
@@ -67,11 +69,12 @@ class PostGenerateCertificateInteractor:
         return token_nubank
 
     def _conect_with_nubank(self, token_nubank):
-        bank = self.adapter.create(
+        bank_entity = BankEntity(
             token=token_nubank,
             number=self.request.bank.number,
             user_id=self.request.user_id,
         )
+        bank = self.adapter.create(bank_entity)
         return bank
 
     def run(self):

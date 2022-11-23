@@ -1,7 +1,7 @@
 from balancelib.schemas.user_schemas import AuthLogin
-from balance_domain.models.user_models import User
+from balance_domain.entities.user import UserEntity
 
-from balance_service.adapters.user_alchemy_adapter import UserAlchemyAdapter
+from database.adapters.user import UserAlchemyAdapter
 
 from balancelib.interactors.authenticate_interactor import (
     AuthenticateInteractor,
@@ -40,18 +40,18 @@ class PostTokenAuthenticateInteractor:
         return self.adapter.get_by_email(self.request.email)
 
     @staticmethod
-    def _check_user_not_exists(user: User):
+    def _check_user_not_exists(user: UserEntity):
         if user is None:
-            raise ResponseError(message="Invalid email/password", status_code=401)
+            raise ResponseError(message="Email ou senha incorreto", status_code=200)
 
-    def _verify_password(self, user: User):
+    def _verify_password(self, user: UserEntity):
         if not AuthenticateInteractor().verify_password(
                 self.request.password,
                 user.hashed_password):
-            raise ResponseError(message="Invalid email/password", status_code=401)
+            raise ResponseError(message="Email ou senha incorretod", status_code=200)
 
     @staticmethod
-    def _generate_token(user: User):
+    def _generate_token(user: UserEntity):
         token = AuthenticateInteractor().encode_token(user.id)
         return token
 

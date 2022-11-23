@@ -1,4 +1,4 @@
-from balance_service.adapters.user_alchemy_adapter import UserAlchemyAdapter
+from database.adapters.user import UserAlchemyAdapter
 
 from balancelib.interactors.authenticate_interactor import \
     AuthenticateInteractor
@@ -7,6 +7,8 @@ from balancelib.interactors.response_api_interactor import (
     ResponseSuccess,
     ResponseError
 )
+
+from balance_domain.entities.user import UserEntity
 
 
 class PostCreateUserResponseModel:
@@ -52,12 +54,14 @@ class PostCreateUserInteractor:
         hashed_password = AuthenticateInteractor(). \
             get_password_hash(self.request.password1)
 
-        user = self.adapter.create(
+        user_entity = UserEntity(
             surname=self.request.surname,
             fullname=self.request.fullname,
             email=self.request.email,
             hashed_password=hashed_password,
         )
+
+        user = self.adapter.create(user_entity)
         return user
 
     def run(self):

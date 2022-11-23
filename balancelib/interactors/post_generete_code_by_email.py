@@ -3,7 +3,7 @@ from pynubank.utils.certificate_generator import CertificateGenerator
 
 from balancelib.interactors.response_api_interactor import ResponseSuccess, ResponseError
 
-from balance_service.adapters.bank_alchemy_adapter import BankAlchemyAdapter
+from database.adapters.bank import BankAlchemyAdapter
 
 
 class PostGenerateCodeByEmailResponseModel:
@@ -43,8 +43,8 @@ class PostGenerateCodeByEmailInteractor:
         )
         if has_user_bank is True:
             raise ResponseError(
-                message="This user are connect with this bank",
-                status_code=400,
+                message="Não é possível conectar o mesmo banco",
+                status_code=200,
             )
 
     def _generete_code(self):

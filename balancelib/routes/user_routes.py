@@ -24,8 +24,8 @@ from balancelib.schemas.user_schemas import (
     AuthLogin,
 )
 
-from balance_service.adapters.user_alchemy_adapter import UserAlchemyAdapter
-from balance_service.adapters.bank_alchemy_adapter import BankAlchemyAdapter
+from database.adapters.user import UserAlchemyAdapter
+from database.adapters.bank import BankAlchemyAdapter
 
 
 router = APIRouter()

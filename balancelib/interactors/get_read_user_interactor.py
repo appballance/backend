@@ -1,10 +1,7 @@
-from fastapi import Depends
-
 from balancelib.interactors.response_api_interactor import ResponseSuccess
-from balance_domain.models.user_models import Bank
 
-from balance_service.adapters.user_alchemy_adapter import UserAlchemyAdapter
-from balance_service.adapters.bank_alchemy_adapter import BankAlchemyAdapter
+from database.adapters.user import UserAlchemyAdapter
+from database.adapters.bank import BankAlchemyAdapter
 
 
 class GetReadUserResponseModel:

@@ -19,7 +19,7 @@ from balancelib.interactors.post_generate_certificate import (
     PostGenerateCertificateRequestModel
 )
 
-from balance_service.adapters.bank_alchemy_adapter import BankAlchemyAdapter
+from database.adapters.bank import BankAlchemyAdapter
 
 
 router = APIRouter()
