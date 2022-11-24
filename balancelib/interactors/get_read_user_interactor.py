@@ -1,3 +1,5 @@
+import os
+
 from pynubank import Nubank
 
 from database.adapters.user import UserAlchemyAdapter
@@ -22,13 +24,22 @@ class NuBankService(NuBankServiceBasicInterface):
             token,
             certificate_path)
 
+    def has_certificate(self, certificate_path):
+        isFile = os.path.isfile(certificate_path)
+        if isFile:
+            return True
+        return False
+
     def get_balance(self):
         return self.service.get_account_balance()
 
 
 class BankResponse:
-    def __init__(self, balance):
+    def __init__(self,
+                 balance: int,
+                 code: str):
         self.balance = balance
+        self.code = code
 
     def to_json(self):
         vars(self)
@@ -80,10 +91,12 @@ class GetReadUserInteractor:
     def run(self):
         user = self._get_user()
 
-        cert_path = f"certificate_{user.id}.p12"
         banks = [
             BankResponse(
-                balance=self._get_nubank_balance(bank_token=bank.token, certificate_path=cert_path),
+                balance=self._get_nubank_balance(
+                    bank_token=bank.token,
+                    certificate_path=bank.certificate_url),
+                code=bank.code,
             ) for bank in self._get_user_banks()]
 
         response = GetReadUserResponseModel(user, banks)
