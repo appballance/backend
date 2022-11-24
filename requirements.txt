@@ -1,7 +1,7 @@
 appdirs==1.4.4
 asgiref==3.4.1
-balance-service==0.0.3
-balance-domain==0.1.35
+balance-service==0.0.4
+balance-domain==0.1.36
 PyMySQL==1.0.2
 pynubank==2.21.1
 pyOpenSSL==22.1.0
