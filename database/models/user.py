@@ -11,7 +11,7 @@ class User(Base):
     surname = Column(String(255))
     fullname = Column(String(255))
     email = Column(String(255), unique=True, index=True)
-    hashed_password = Column(String(255))
+    password = Column(String(255))
     is_active = Column(Boolean, default=True)
 
     bank = relationship("Bank")

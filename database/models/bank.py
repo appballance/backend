@@ -7,7 +7,8 @@ class Bank(Base):
     __tablename__ = "TB_BANK"
 
     id = Column(Integer, primary_key=True, index=True)
-    number = Column(String(5))
+    code = Column(String(5))
+    certificate_url = Column(String(255))
     token = Column(String(800))
     is_active = Column(Boolean, default=True)
     user_id = Column(Integer, ForeignKey("TB_USER.id"))

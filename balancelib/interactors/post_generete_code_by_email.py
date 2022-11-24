@@ -39,7 +39,7 @@ class PostGenerateCodeByEmailInteractor:
     def _check_bank_connect(self):
         has_user_bank = self.adapter.user_has_bank(
             user_id=self.request.user_id,
-            bank_number=self.request.bank.number
+            bank_code=self.request.bank.code
         )
         if has_user_bank is True:
             raise ResponseError(

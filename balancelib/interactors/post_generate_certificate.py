@@ -68,11 +68,14 @@ class PostGenerateCertificateInteractor:
         )
         return token_nubank
 
-    def _conect_with_nubank(self, token_nubank):
+    def _conect_with_nubank(self,
+                            token_nubank: str,
+                            certificate_url: str):
         bank_entity = BankEntity(
             token=token_nubank,
-            number=self.request.bank.number,
+            code=self.request.bank.code,
             user_id=self.request.user_id,
+            certificate_url=certificate_url,
         )
         bank = self.adapter.create(bank_entity)
         return bank
@@ -87,7 +90,7 @@ class PostGenerateCertificateInteractor:
 
         token_nubank = self._get_token_nubank(certificate_path)
 
-        bank = self._conect_with_nubank(token_nubank)
+        bank = self._conect_with_nubank(token_nubank, certificate_path)
 
         response = PostGenerateCertificateResponseModel(bank)
         return response

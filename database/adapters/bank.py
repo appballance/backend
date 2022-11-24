@@ -15,9 +15,10 @@ class BankAlchemyAdapter(
 
     def create(self, bank: BankEntity):
         bank = BankModel(
-            number=bank.number,
+            code=bank.code,
             token=bank.token,
-            user_id=bank.user_id)
+            user_id=bank.user_id,
+            certificate_url=bank.certificate_url,)
         self.session.add(bank)
         self.session.commit()
         self.session.refresh(bank)
@@ -33,9 +34,9 @@ class BankAlchemyAdapter(
 
     def user_has_bank(self,
                       user_id: int,
-                      bank_number: str):
+                      bank_code: str):
         banks = self.session.query(BankModel).filter(
-            BankModel.number == bank_number,
+            BankModel.code == bank_code,
             BankModel.user_id == user_id,
         ).first()
 

@@ -47,7 +47,7 @@ class PostTokenAuthenticateInteractor:
     def _verify_password(self, user: UserEntity):
         if not AuthenticateInteractor().verify_password(
                 self.request.password,
-                user.hashed_password):
+                user.password):
             raise ResponseError(message="Email ou senha incorretod", status_code=200)
 
     @staticmethod

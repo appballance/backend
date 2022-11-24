@@ -58,7 +58,7 @@ class PostCreateUserInteractor:
             surname=self.request.surname,
             fullname=self.request.fullname,
             email=self.request.email,
-            hashed_password=hashed_password,
+            password=hashed_password,
         )
 
         user = self.adapter.create(user_entity)

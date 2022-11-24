@@ -15,14 +15,14 @@ class UserAlchemyAdapter(UserRepositorie, ConnectionDatabase):
             surname=user.surname,
             fullname=user.fullname,
             email=user.email,
-            hashed_password=user.hashed_password,
+            password=user.password,
         )
         self.session.add(user)
         self.session.commit()
         self.session.refresh(user)
         return user
 
-    def get_by_id(self, user_id: str):
+    def get_by_id(self, user_id: int):
         user = self.session.query(UserModel).filter(UserModel.id == user_id).first()
         return user
 
