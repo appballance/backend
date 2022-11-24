@@ -19,9 +19,12 @@ SQLALCHEMY_DATABASE_URL = f"{DIALECT}://{USERNAME}:{PASSWORD}@{HOSTNAME}:{PORT}/
 engine = create_engine(SQLALCHEMY_DATABASE_URL)
 Base = declarative_base()
 Session = sessionmaker(bind=engine)
-Base.metadata.create_all(bind=engine)  # Generate tables?
 
 
 class ConnectionDatabase:
     def __init__(self):
         self.session = Session()
+
+
+def create_tables():
+    Base.metadata.create_all(bind=engine)  # Generate tables?
