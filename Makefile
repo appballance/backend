@@ -62,3 +62,10 @@ tests:
 install: uninstall_all ## instala as dependências
 	pip install --upgrade pip
 	pip install -r requirements.txt
+
+migrate_init:
+	alembic revision --autogenerate -m "migration"
+	@echo "\033[32mMigration started!"
+
+migrate:
+	alembic upgrade head
