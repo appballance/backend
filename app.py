@@ -8,7 +8,6 @@ from balancelib.routes import user_routes
 
 from database.settings import create_tables
 
-
 create_tables()
 
 app = FastAPI(app_name="balance")
