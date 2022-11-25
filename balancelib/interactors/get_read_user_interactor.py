@@ -1,7 +1,10 @@
 import os
 
+import boto3
+from balance_service.interfaces.boto_s3 import BotoS3
 from pynubank import Nubank
 
+from balancelib.interactors.boto_s3_interactor import BotoS3Interactor
 from database.adapters.user import UserAlchemyAdapter
 from database.adapters.bank import BankAlchemyAdapter
 
@@ -25,8 +28,8 @@ class NuBankService(NuBankServiceBasicInterface):
             certificate_path)
 
     def has_certificate(self, certificate_path):
-        isFile = os.path.isfile(certificate_path)
-        if isFile:
+        is_file = os.path.isfile(certificate_path)
+        if is_file:
             return True
         return False
 
@@ -88,16 +91,31 @@ class GetReadUserInteractor:
         )
         return nu.get_balance()
 
+    def _get_certificate_in_bucket(self, certificate_url):
+        s3 = BotoS3(interactor_service=BotoS3Interactor())
+
+        has_file = s3.has_file(file_path=certificate_url)
+
+        if has_file:
+            s3.download_file(file_path=certificate_url,
+                             file_path_new=certificate_url)
+
     def run(self):
         user = self._get_user()
+        banks = []
 
-        banks = [
-            BankResponse(
-                balance=self._get_nubank_balance(
-                    bank_token=bank.token,
-                    certificate_path=bank.certificate_url),
-                code=bank.code,
-            ) for bank in self._get_user_banks()]
+        for bank in self._get_user_banks():
+            self._get_certificate_in_bucket(bank.certificate_url)
+
+            balance = self._get_nubank_balance(
+                bank_token=bank.token,
+                certificate_path=bank.certificate_url,)
+
+            new_bank = BankResponse(
+                balance=balance,
+                code=bank.code,)
+
+            banks.append(new_bank)
 
         response = GetReadUserResponseModel(user, banks)
         return response

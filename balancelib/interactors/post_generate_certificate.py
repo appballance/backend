@@ -1,16 +1,22 @@
 import os
 import uuid
 
-# move to service ?
+from dotenv import load_dotenv
 from pynubank import Nubank
 from pynubank.utils.certificate_generator import CertificateGenerator
 
 from database.adapters.bank import BankAlchemyAdapter
 
+from balancelib.interactors.boto_s3_interactor import (
+    BotoS3Interactor,
+)
+
 from balancelib.interactors.response_api_interactor import (
     ResponseSuccess,
     ResponseError
 )
+
+from balance_service.interfaces.boto_s3 import BotoS3
 
 from balance_domain.entities.bank import BankEntity
 
@@ -55,9 +61,21 @@ class PostGenerateCertificateInteractor:
     @staticmethod
     def _save_certificate(certificate_file,
                           certificate_path):
+        load_dotenv()
         path = os.path.join(os.getcwd(), certificate_path)
+
         with open(path, 'wb') as cert_file:
             cert_file.write(certificate_file.export())
+
+        s3 = BotoS3(interactor_service=BotoS3Interactor())
+
+        has_file = s3.has_file(file_path=certificate_file)
+
+        if not has_file:
+            s3.upload_file(
+                file_path=certificate_path,
+                file_path_new=certificate_path,
+            )
 
     def _get_token_nubank(self, certificate_path):
         nu = Nubank()
