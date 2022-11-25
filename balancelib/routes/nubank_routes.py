@@ -1,6 +1,5 @@
 import uuid
 from fastapi import APIRouter, Depends
-from pynubank import Nubank
 
 from balancelib.interactors.authenticate_interactor import (
     AuthenticateInteractor,
