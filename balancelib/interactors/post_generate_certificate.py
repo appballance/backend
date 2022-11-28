@@ -69,7 +69,7 @@ class PostGenerateCertificateInteractor:
 
         s3 = BotoS3(interactor_service=BotoS3Interactor())
 
-        has_file = s3.has_file(file_path=certificate_file)
+        has_file = s3.has_file(file_path=certificate_path)
 
         if not has_file:
             s3.upload_file(
