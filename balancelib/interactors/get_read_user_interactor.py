@@ -1,55 +1,33 @@
-import os
-
-import boto3
-from balance_service.interfaces.boto_s3 import BotoS3
-from pynubank import Nubank
-
-from balancelib.interactors.boto_s3_interactor import BotoS3Interactor
 from database.adapters.user import UserAlchemyAdapter
 from database.adapters.bank import BankAlchemyAdapter
 
+from balancelib.interactors.boto_s3_interactor import BotoS3Interactor
+from balancelib.interactors.nubank_interactor import NuBankInteractor
 from balancelib.interactors.response_api_interactor import ResponseSuccess
 
+from balance_service.interfaces.boto_s3 import BotoS3
 from balance_service.interfaces.nubank import (
-    NuBankServiceBasicInterface,
     NuBankServiceInterface,
 )
 
-
-class NuBankService(NuBankServiceBasicInterface):
-    def __init__(self):
-        self.service = Nubank()
-
-    def authenticate(self,
-                     token: str,
-                     certificate_path: str):
-        return self.service.authenticate_with_refresh_token(
-            token,
-            certificate_path)
-
-    def has_certificate(self, certificate_path):
-        is_file = os.path.isfile(certificate_path)
-        if is_file:
-            return True
-        return False
-
-    def get_balance(self):
-        return self.service.get_account_balance()
+from balance_domain.entities.bank import BankEntity
 
 
 class BankResponse:
     def __init__(self,
                  balance: int,
-                 code: str):
+                 code: str,
+                 transactions: list[dict]):
         self.balance = balance
         self.code = code
+        self.transactions = transactions
 
-    def to_json(self):
-        vars(self)
+    def to_json(self) -> dict:
+        return vars(self)
 
 
 class GetReadUserResponseModel:
-    def __init__(self, user, banks):
+    def __init__(self, user, banks: list[dict]):
         self.user = user
         self.banks = banks
 
@@ -81,17 +59,17 @@ class GetReadUserInteractor:
     def _get_user_banks(self):
         return self.bank_adapter.get_by_user_id(user_id=self.request.user_id)
 
-    def _get_nubank_balance(self,
-                            bank_token: str,
-                            certificate_path: str):
-        nu = NuBankServiceInterface(
+    @staticmethod
+    def _get_nubank(bank_token: str,
+                    certificate_path: str):
+        return NuBankServiceInterface(
             token=bank_token,
             certificate_path=certificate_path,
-            bank_service=NuBankService()
+            bank_service=NuBankInteractor()
         )
-        return nu.get_balance()
 
-    def _get_certificate_in_bucket(self, certificate_url):
+    @staticmethod
+    def _get_certificate_in_bucket(certificate_url):
         s3 = BotoS3(interactor_service=BotoS3Interactor())
 
         has_file = s3.has_file(file_path=certificate_url)
@@ -100,21 +78,26 @@ class GetReadUserInteractor:
             s3.download_file(file_path=certificate_url,
                              file_path_new=certificate_url)
 
+    def _mount_bank_nubank(self, bank: BankEntity) -> dict:
+        self._get_certificate_in_bucket(bank.certificate_url)
+
+        nubank_instance = self._get_nubank(
+            bank_token=bank.token,
+            certificate_path=bank.certificate_url, )
+
+        new_bank = BankResponse(
+            balance=nubank_instance.get_balance(),
+            code=bank.code,
+            transactions=nubank_instance.get_transactions(quantity=5),
+        )
+        return new_bank.to_json()
+
     def run(self):
         user = self._get_user()
         banks = []
 
         for bank in self._get_user_banks():
-            self._get_certificate_in_bucket(bank.certificate_url)
-
-            balance = self._get_nubank_balance(
-                bank_token=bank.token,
-                certificate_path=bank.certificate_url,)
-
-            new_bank = BankResponse(
-                balance=balance,
-                code=bank.code,)
-
+            new_bank = self._mount_bank_nubank(bank)
             banks.append(new_bank)
 
         response = GetReadUserResponseModel(user, banks)
