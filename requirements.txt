@@ -31,7 +31,6 @@ pycosat==0.6.3
 pycparser==2.20
 pydantic==1.8.2
 PyJWT==2.1.0
-PyMySQL==1.0.2
 pynubank==2.21.1
 pyOpenSSL==22.1.0
 python-dateutil==2.8.2
@@ -51,3 +50,5 @@ uvicorn==0.14.0
 virtualenv==20.0.31
 virtualenv-clone==0.5.4
 wrapt==1.14.1
+psycopg2-binary==2.9.5
+
