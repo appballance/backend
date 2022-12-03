@@ -27,7 +27,7 @@ class BankResponse:
 
 
 class GetReadUserResponseModel:
-    def __init__(self, user, banks: list[dict]):
+    def __init__(self, user, banks: list):
         self.user = user
         self.banks = banks
 
