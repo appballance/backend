@@ -17,7 +17,7 @@ class BankResponse:
     def __init__(self,
                  balance: int,
                  code: str,
-                 transactions: list[dict]):
+                 transactions: list):
         self.balance = balance
         self.code = code
         self.transactions = transactions
