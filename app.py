@@ -4,6 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from balancelib.interactors.response_api_interactor import ResponseError
 from balancelib.routes import nubank_routes
+from balancelib.routes import bank_routes
 from balancelib.routes import user_routes
 
 from database.settings import create_tables
@@ -29,4 +30,5 @@ app.add_middleware(
 )
 
 app.include_router(user_routes.router)
+app.include_router(bank_routes.router)
 app.include_router(nubank_routes.router)
