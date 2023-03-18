@@ -26,6 +26,39 @@ class BankResponse:
         return vars(self)
 
 
+class TransactionResponse:
+    def __init__(self,
+                 amount: float,
+                 address: str,
+                 type_payment: str):
+        self.amount = amount
+        self.address = self.formatted_address(address)
+        self.type_payment = self.formatted_method_payment(type_payment)
+
+    @staticmethod
+    def formatted_method_payment(type_payment: str) -> str:
+        types_payments = ['Pix']
+        type_payment_cut = type_payment[0:3]
+
+        for type_payment in types_payments:
+            if type_payment == type_payment_cut:
+                return type_payment_cut
+
+        return type_payment
+
+    @staticmethod
+    def formatted_address(address: str) -> str:
+        place_cut = address.find('\n')
+
+        if place_cut == -1:
+            return address
+
+        return address[0:place_cut]
+
+    def to_json(self) -> dict:
+        return vars(self)
+
+
 class GetReadUserResponseModel:
     def __init__(self, user, banks: list):
         self.user = user
@@ -85,10 +118,20 @@ class GetReadUserInteractor:
             bank_token=bank.token,
             certificate_path=bank.certificate_url, )
 
+        transactions = nubank_instance.get_transactions(quantity=5)
+
+        new_transactions = [
+            TransactionResponse(
+                amount=transaction['amount'],
+                address=transaction['detail'],
+                type_payment=transaction['__typename'],
+            ) for transaction in transactions
+        ]
+
         new_bank = BankResponse(
             balance=nubank_instance.get_balance(),
             code=bank.code,
-            transactions=nubank_instance.get_transactions(quantity=5),
+            transactions=new_transactions,
         )
         return new_bank.to_json()
 
