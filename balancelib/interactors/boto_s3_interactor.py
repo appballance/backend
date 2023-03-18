@@ -7,10 +7,10 @@ from balance_service.interfaces.boto_s3 import BasicBotoS3
 
 
 class BotoS3Interactor(BasicBotoS3):
-    def __init__(self):
+    def __init__(self, bucket_name: str):
         self.load_dotenv()
 
-        self.bucket_path = os.environ['AWS_BUCKET_NAME']
+        self.bucket_path = bucket_name
         self.region_name = os.environ['AWS_REGION_NAME']
         self.aws_access_key_id = os.environ['AWS_ACCESS_KEY_ID']
         self.aws_secret_access_key = os.environ['AWS_SECRET_ACCESS_KEY']
@@ -34,6 +34,7 @@ class BotoS3Interactor(BasicBotoS3):
             list(self.s3.buckets.all())
             return True
         except:
+            print('Error: s3 failed in connection')
             return False
 
     def upload_file(self,
