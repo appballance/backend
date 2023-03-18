@@ -24,7 +24,7 @@ class BankAlchemyAdapter(
         self.session.refresh(bank)
         return bank
 
-    def get_by_id(self, bank_id: str):
+    def get_by_id(self, bank_id: int) -> BankEntity:
         banks = self.session.query(BankModel).filter(BankModel.id == bank_id).first()
         return banks
 

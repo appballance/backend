@@ -6,6 +6,10 @@ from database.adapters.bank import BankAlchemyAdapter
 from balancelib.interactors.boto_s3_interactor import BotoS3Interactor
 from balancelib.interactors.nubank_interactor import NuBankInteractor
 from balancelib.interactors.response_api_interactor import ResponseSuccess
+from balancelib.interactors.get_read_bank_interactor import (
+    BasicBankResponseModel,
+    BasicTransactionResponse
+)
 
 from balance_service.interfaces.boto_s3 import BotoS3
 from balance_service.interfaces.nubank import (
@@ -13,72 +17,6 @@ from balance_service.interfaces.nubank import (
 )
 
 from balance_domain.entities.bank import BankEntity
-
-
-class BankResponse:
-    def __init__(self,
-                 entity_id: int,
-                 balance: int,
-                 code: str,
-                 transactions: list):
-        self.entity_id = entity_id
-        self.balance = balance
-        self.code = code
-        self.transactions = transactions
-
-    def to_json(self) -> dict:
-        return vars(self)
-
-
-class TransactionResponse:
-    def __init__(self,
-                 amount: float,
-                 address: str,
-                 type_payment: str,
-                 type_transaction: str):
-        self.amount = amount
-        self.address = self.formatted_address(address)
-        self.type_payment = self.formatted_method_payment(type_payment)
-        self.type_transaction = self.formatted_type_transaction(type_transaction)
-
-    @staticmethod
-    def formatted_method_payment(type_payment: str) -> str:
-        types_payments = ['Pix']
-        type_payment_cut = type_payment[0:3]
-
-        for type_payment in types_payments:
-            if type_payment == type_payment_cut:
-                return type_payment_cut
-
-        return type_payment
-
-    @staticmethod
-    def formatted_type_transaction(type_transaction: str) -> str:
-        place_cut = type_transaction.find(' ')
-
-        if place_cut == -1:
-            return type_transaction
-
-        type_transaction_formatted = type_transaction[(place_cut + 1):len(type_transaction)]
-
-        if type_transaction_formatted == 'enviada':
-            return 'income'
-        if type_transaction_formatted == 'recebida':
-            return 'expense'
-
-        return ''
-
-    @staticmethod
-    def formatted_address(address: str) -> str:
-        place_cut = address.find('\n')
-
-        if place_cut == -1:
-            return address
-
-        return address[0:place_cut]
-
-    def to_json(self) -> dict:
-        return vars(self)
 
 
 class GetReadUserResponseModel:
@@ -149,7 +87,7 @@ class GetReadUserInteractor:
         transactions = nubank_instance.get_transactions(quantity=3)
 
         new_transactions = [
-            TransactionResponse(
+            BasicTransactionResponse(
                 amount=transaction['amount'],
                 address=transaction['detail'],
                 type_payment=transaction['__typename'],
@@ -157,7 +95,7 @@ class GetReadUserInteractor:
             ) for transaction in transactions
         ]
 
-        new_bank = BankResponse(
+        new_bank = BasicBankResponseModel(
             entity_id=bank.id,
             balance=nubank_instance.get_balance(),
             code=bank.code,
