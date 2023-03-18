@@ -18,7 +18,7 @@ class AuthenticateInteractor:
 
     def encode_token(self, user_id):
         payload = {
-            'exp': datetime.utcnow() + timedelta(days=0, minutes=20),
+            'exp': datetime.utcnow() + timedelta(days=0, minutes=30),
             'iat': datetime.utcnow(),
             'sub': user_id
         }
