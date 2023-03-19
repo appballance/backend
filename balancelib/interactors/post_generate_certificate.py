@@ -67,7 +67,11 @@ class PostGenerateCertificateInteractor:
         with open(path, 'wb') as cert_file:
             cert_file.write(certificate_file.export())
 
-        s3 = BotoS3(interactor_service=BotoS3Interactor())
+        s3 = BotoS3(
+            interactor_service=BotoS3Interactor(
+                bucket_name=os.environ['BUCKET_CERTIFICATES']
+            )
+        )
 
         has_file = s3.has_file(file_path=certificate_path)
 
