@@ -2,6 +2,7 @@ from balance_domain.entities.bank import BankEntity
 from balance_service.interfaces.nubank import NuBankServiceInterface
 
 from balancelib.interactors.nubank_interactor import NuBankInteractor
+from balancelib.interactors.pagination_interactor import PaginationInteractor, PaginationRequest
 from balancelib.interactors.response_api_interactor import (
     ResponseSuccess,
     ResponseError
@@ -89,9 +90,13 @@ class GetReadBankResponseModel:
 class GetReadBankRequestModel:
     def __init__(self,
                  entity_id: int,
-                 user_id: str):
+                 user_id: str,
+                 page: int,
+                 per_page: int):
         self.entity_id = entity_id
         self.user_id = user_id
+        self.page = page
+        self.per_page = per_page
 
 
 class GetReadBankInteractor:
@@ -129,20 +134,30 @@ class GetReadBankInteractor:
             certificate_path=bank.certificate_url
         )
 
-        transactions = nubank_instance.get_transactions(quantity=3)
+        transactions = nubank_instance.get_transactions(quantity=None)
+
+        new_transactions = [
+            BasicTransactionResponse(
+                amount=transaction['amount'],
+                address=transaction['detail'],
+                type_payment=transaction['__typename'],
+                type_transaction=transaction['title']
+            ) for transaction in transactions
+        ]
+
+        request = PaginationRequest(
+            rows=new_transactions,
+            page=self.request.page,
+            per_page=self.request.per_page,
+        )
+        interactor = PaginationInteractor(request)
+        transactions_paginated = interactor.run()
 
         new_bank = BasicBankResponseModel(
             entity_id=bank.id,
             balance=nubank_instance.get_balance(),
             code=bank.code,
-            transactions=[
-                BasicTransactionResponse(
-                    amount=transaction['amount'],
-                    address=transaction['detail'],
-                    type_payment=transaction['__typename'],
-                    type_transaction=transaction['title']
-                ) for transaction in transactions
-            ],
+            transactions=transactions_paginated,
         )
         return new_bank
 
