@@ -43,9 +43,9 @@ class BasicTransactionResponse:
         type_transaction_formatted = type_transaction[(place_cut + 1):len(type_transaction)]
 
         if type_transaction_formatted == 'enviada':
-            return 'income'
-        if type_transaction_formatted == 'recebida':
             return 'expense'
+        if type_transaction_formatted == 'recebida':
+            return 'income'
 
         return ''
 
