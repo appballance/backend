@@ -1,5 +1,6 @@
 import os
-from pynubank import Nubank
+
+from balance_nubank import Nubank
 
 from balance_service.interfaces.boto_s3 import BotoS3
 from balance_service.interfaces.nubank import (
