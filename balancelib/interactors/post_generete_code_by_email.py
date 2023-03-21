@@ -49,14 +49,13 @@ class PostGenerateCodeByEmailInteractor:
             )
 
     def _generete_code(self):
-        try:
-            response = self.certificate.request_code()
-            return response
-        finally:
-            raise ResponseError(
-                message="Dados incorretos. Se o erro persistir entre em contato com o técnico!",
-                status_code=401,
-            )
+        response = self.certificate.request_code()
+        return response
+
+        # raise ResponseError(
+        #     message="Dados incorretos. Se o erro persistir entre em contato com o técnico!",
+        #     status_code=401,
+        # )
 
     def _get_instance_certificate(self):
         return self.certificate
