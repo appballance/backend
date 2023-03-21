@@ -1,5 +1,6 @@
 import uuid
-from pynubank.utils.certificate_generator import CertificateGenerator
+
+from balance_nubank.utils.certificate_generator import CertificateGenerator
 
 from balancelib.interactors.response_api_interactor import ResponseSuccess, ResponseError
 

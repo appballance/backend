@@ -2,8 +2,8 @@ import os
 import uuid
 
 from dotenv import load_dotenv
-from pynubank import Nubank
-from pynubank.utils.certificate_generator import CertificateGenerator
+from balance_nubank import Nubank
+from balance_nubank.utils.certificate_generator import CertificateGenerator
 
 from database.adapters.bank import BankAlchemyAdapter
 
