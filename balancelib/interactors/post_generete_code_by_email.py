@@ -50,12 +50,15 @@ class PostGenerateCodeByEmailInteractor:
 
     def _generete_code(self):
         response = self.certificate.request_code()
-        return response
 
-        # raise ResponseError(
-        #     message="Dados incorretos. Se o erro persistir entre em contato com o técnico!",
-        #     status_code=401,
-        # )
+        if response == 'Unauthorized' \
+                or type(response) != str and response.get('password') is not None \
+                or type(response) != str and response.get('login') is not None:
+            raise ResponseError(
+                message="Dados incorretos!",
+                status_code=401,
+            )
+        return response
 
     def _get_instance_certificate(self):
         return self.certificate
