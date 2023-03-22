@@ -90,6 +90,7 @@ class GetReadUserInteractor:
             BasicTransactionResponse(
                 amount=transaction['amount'],
                 address=transaction['detail'],
+                date=transaction['postDate'],
                 type_payment=transaction['__typename'],
                 type_transaction=transaction['title']
             ) for transaction in transactions

@@ -15,10 +15,12 @@ class BasicTransactionResponse:
     def __init__(self,
                  amount: float,
                  address: str,
+                 date: str,
                  type_payment: str,
                  type_transaction: str):
         self.amount = amount
         self.address = self.formatted_address(address)
+        self.date = date
         self.type_payment = self.formatted_method_payment(type_payment)
         self.type_transaction = self.formatted_type_transaction(type_transaction)
 
@@ -140,6 +142,7 @@ class GetReadBankInteractor:
             BasicTransactionResponse(
                 amount=transaction['amount'],
                 address=transaction['detail'],
+                date=transaction['postDate'],
                 type_payment=transaction['__typename'],
                 type_transaction=transaction['title']
             ) for transaction in transactions
