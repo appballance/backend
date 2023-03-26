@@ -69,7 +69,7 @@ class BasicBankResponseModel:
                  entity_id: int,
                  balance: int,
                  code: str,
-                 transactions: list):
+                 transactions: list = None):
         self.entity_id = entity_id
         self.balance = balance
         self.code = code

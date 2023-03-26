@@ -84,23 +84,10 @@ class GetReadUserInteractor:
             bank_token=bank.token,
             certificate_path=bank.certificate_url, )
 
-        transactions = nubank_instance.get_transactions(quantity=3)
-
-        new_transactions = [
-            BasicTransactionResponse(
-                amount=transaction['amount'],
-                address=transaction['detail'],
-                date=transaction['postDate'],
-                type_payment=transaction['__typename'],
-                type_transaction=transaction['title']
-            ) for transaction in transactions
-        ]
-
         new_bank = BasicBankResponseModel(
             entity_id=bank.id,
             balance=nubank_instance.get_balance(),
-            code=bank.code,
-            transactions=new_transactions,
+            code=bank.code
         )
         return new_bank.to_json()
 
