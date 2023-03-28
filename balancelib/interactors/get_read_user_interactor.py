@@ -20,14 +20,16 @@ from balance_domain.entities.bank import BankEntity
 
 
 class GetReadUserResponseModel:
-    def __init__(self, user, banks: list):
+    def __init__(self, user, user_balance: int, banks: list):
         self.user = user
+        self.user_balance = user_balance
         self.banks = banks
 
     def __call__(self):
         user = self.user.to_json()
         return ResponseSuccess({
             'surname': user['surname'],
+            'balance': self.user_balance,
             'banks': self.banks
         })
 
@@ -94,10 +96,17 @@ class GetReadUserInteractor:
     def run(self):
         user = self._get_user()
         banks = []
+        user_balance = 0
 
         for bank in self._get_user_banks():
             new_bank = self._mount_bank_nubank(bank)
+
+            if new_bank is None:
+                user_balance = 0
+            else:
+                user_balance = new_bank.get('balance')
+
             banks.append(new_bank)
 
-        response = GetReadUserResponseModel(user, banks)
+        response = GetReadUserResponseModel(user, user_balance, banks)
         return response
