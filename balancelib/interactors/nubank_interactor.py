@@ -1,4 +1,5 @@
 import os
+from cachetools import cached, TTLCache
 
 from balance_nubank import Nubank
 
@@ -15,6 +16,7 @@ class NuBankInteractor(NuBankServiceBasicInterface):
         self.service = Nubank()
 
     @staticmethod
+    @cached(cache=TTLCache(maxsize=100, ttl=3600))
     def _get_certificate_in_bucket(certificate_url: str) -> bool:
         s3 = BotoS3(
             interactor_service=BotoS3Interactor(
