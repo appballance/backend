@@ -1,7 +1,7 @@
 from unittest.mock import MagicMock, patch
 from pytest import fixture, raises
 
-from balancelib.interactors.post_create_user_interactor import (
+from balancelib.interactors import (
     PostCreateUserResponseModel,
     PostCreateUserRequestModel,
     PostCreateUserInteractor)

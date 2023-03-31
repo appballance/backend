@@ -2,7 +2,7 @@ from unittest.mock import MagicMock, patch
 
 from pytest import fixture
 
-from balancelib.interactors.post_token_authenticate_interactor import (
+from balancelib.interactors import (
     PostTokenAuthenticateResponseModel,
     PostTokenAuthenticateRequestModel,
     PostTokenAuthenticateInteractor,)

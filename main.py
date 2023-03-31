@@ -5,7 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from mangum import Mangum
 
 from balancelib.interactors.response_api_interactor import ResponseError
-from balancelib.routes import nubank_routes, user_routes, bank_routes
+from balancelib.routes import user_routes, bank_routes, nubank_routes
 
 from database.settings import create_tables
 
