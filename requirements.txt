@@ -15,7 +15,6 @@ charset-normalizer==2.1.1
 click==8.0.1
 colorama==0.4.6
 conda==4.3.16
-cryptography==35.0.0
 Deprecated==1.2.13
 distlib==0.3.1
 fastapi==0.65.2
