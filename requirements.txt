@@ -17,17 +17,11 @@ colorama==0.4.6
 Deprecated==1.2.13
 distlib==0.3.1
 fastapi==0.65.2
-filelock==3.0.12
-greenlet==1.1.0
 gunicorn==20.1.0
-h11==0.12.0
-idna==2.10
 jmespath==1.0.1
-Mako==1.2.4
 mangum==0.17.0
 passlib==1.7.4
 pipenv==2020.8.13
-pycosat==0.6.3
 pycparser==2.20
 pydantic==1.8.2
 PyJWT==2.1.0
@@ -37,9 +31,6 @@ python-dateutil==2.8.2
 python-dotenv==0.21.0
 qrcode==7.3.1
 requests==2.28.1
-requests-pkcs12==1.14
-ruamel.yaml==0.16.12
-ruamel.yaml.clib==0.2.2
 s3transfer==0.6.0
 six==1.16.0
 SQLAlchemy==1.4.20
