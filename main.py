@@ -29,20 +29,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-
-@app.get("/")
-async def root():
-    return {
-        "message": "hellow world"
-    }
-
-
-@app.get("/router2")
-async def root():
-    return {
-        "message": "hellow world2"
-    }
-
 app.include_router(user_routes.router)
 app.include_router(bank_routes.router)
 app.include_router(nubank_routes.router)
