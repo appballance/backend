@@ -25,15 +25,17 @@ class BotoS3Interactor(BasicBotoS3):
         load_dotenv()
 
     def authenticate(self,):
-        self.s3 = self.service.resource(
-            service_name="s3",
-            region_name=self.region_name,
-            aws_access_key_id=self.aws_access_key_id,
-            aws_secret_access_key=self.aws_secret_access_key,)
-
         try:
-            list(self.s3.buckets.all())
-            return True
+            self.s3 = self.service.resource(
+                service_name="s3",
+                region_name=self.region_name,
+                aws_access_key_id=self.aws_access_key_id,
+                aws_secret_access_key=self.aws_secret_access_key, )
+
+            if list(self.s3.buckets.all()):
+                return True
+            else:
+                return False
         except:
             raise ResponseError(status_code=400,
                                 message="failed in authenticated of S3 instance")
@@ -54,8 +56,7 @@ class BotoS3Interactor(BasicBotoS3):
                 .download_file(Key=file_path, Filename=file_path_new, )
         except:
             raise ResponseError(status_code=400,
-                                message=f"failed in download S3 file {bucket_path}")
-
+                                message=f"failed download S3 file {file_path} in {bucket_path}")
 
     def has_file(self,
                  bucket_path: str,
