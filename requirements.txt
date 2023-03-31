@@ -28,7 +28,6 @@ mangum==0.17.0
 passlib==1.7.4
 pipenv==2020.8.13
 platformdirs==2.5.4
-psycopg2-binary==2.9.5
 pycosat==0.6.3
 pycparser==2.20
 pydantic==1.8.2
