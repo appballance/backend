@@ -9,6 +9,7 @@ from balance_service.interfaces.nubank import (
 )
 
 from balancelib.interactors.boto_s3_interactor import BotoS3Interactor
+from balancelib.interactors.response_api_interactor import ResponseError
 
 
 class NuBankInteractor(NuBankServiceBasicInterface):
@@ -27,9 +28,15 @@ class NuBankInteractor(NuBankServiceBasicInterface):
         has_file = s3.has_file(file_path=certificate_url)
 
         if has_file:
-            s3.download_file(file_path=certificate_url,
-                             file_path_new=certificate_url)
-            return True
+            try:
+                s3.download_file(file_path=certificate_url,
+                                 file_path_new=certificate_url)
+                return True
+            except:
+                raise ResponseError(
+                    message="Failed in download of certificate in bucket",
+                    status_code=400
+                )
         return False
 
     def authenticate(self,
@@ -39,15 +46,13 @@ class NuBankInteractor(NuBankServiceBasicInterface):
             token,
             certificate_path)
 
-    def has_certificate(self, certificate_path):
-        is_file = os.path.isfile(certificate_path)
+    def has_certificate(self, certificate_url):
+        is_file = os.path.isfile(certificate_url)
 
         if is_file:
             return True
 
-        has_in_s3 = self._get_certificate_in_bucket(
-            certificate_url=certificate_path
-        )
+        has_in_s3 = self._get_certificate_in_bucket(certificate_url)
         return has_in_s3
 
     def get_balance(self):

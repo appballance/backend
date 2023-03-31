@@ -50,10 +50,10 @@ class GetReadUserInteractor:
         return self.bank_adapter.get_by_user_id(user_id=self.request.user_id)
 
     @staticmethod
-    def get_nubank_instance(bank_token: str,
+    def get_nubank_instance(token: str,
                             certificate_path: str):
         return NuBankServiceInterface(
-            token=bank_token,
+            token=token,
             certificate_path=certificate_path,
             bank_service=NuBankInteractor()
         )
@@ -61,7 +61,7 @@ class GetReadUserInteractor:
     def _enriched_bank_nubank(self, bank: BankEntity) -> dict:
         try:
             nubank_instance = self.get_nubank_instance(
-                bank_token=bank.token,
+                token=bank.token,
                 certificate_path=bank.certificate_url, )
 
             new_bank = BasicBankResponseModel(
