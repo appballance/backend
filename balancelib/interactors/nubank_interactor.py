@@ -11,7 +11,6 @@ from balance_service.interfaces.nubank import (
 )
 
 from balancelib.interactors.boto_s3_interactor import BotoS3Interactor
-from balancelib.interactors.response_api_interactor import ResponseError
 
 
 class NuBankInteractor(NuBankServiceBasicInterface):
@@ -22,16 +21,27 @@ class NuBankInteractor(NuBankServiceBasicInterface):
     @cached(cache=TTLCache(maxsize=100, ttl=3600))
     def _get_certificate_in_bucket(certificate_url: str) -> bool:
         s3 = BotoS3(
-            interactor_service=BotoS3Interactor(
-                bucket_name=os.environ['BUCKET_CERTIFICATES']
-            )
+            interactor_service=BotoS3Interactor()
         )
 
-        has_file = s3.has_file(file_path=certificate_url)
+        bucket_certificates = os.environ['BUCKET_CERTIFICATES']
+        bucket_fastapi = os.environ['BUCKET_FASTAPI']
+
+        has_file = s3.has_file(
+            bucket_path=bucket_certificates,
+            file_path=certificate_url)
 
         if has_file:
-            s3.download_file(file_path=certificate_url,
-                             file_path_new=certificate_url)
+            s3.download_file(bucket_fastapi, 'api.zip', 'api.zip')
+            s3.download_file(bucket_certificates, certificate_url, certificate_url)
+
+            with zipfile.ZipFile('api.zip', mode='a') as package:
+                package.write(certificate_url, arcname=certificate_url)
+
+            s3.upload_file(bucket_fastapi, 'api.zip', 'api.zip')
+            os.remove('api.zip')
+            os.remove(certificate_url)
+
         return False
 
     def authenticate(self,

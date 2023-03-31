@@ -9,10 +9,9 @@ from balancelib.interactors.response_api_interactor import ResponseError
 
 
 class BotoS3Interactor(BasicBotoS3):
-    def __init__(self, bucket_name: str):
+    def __init__(self,):
         self.load_dotenv()
 
-        self.bucket_path = bucket_name
         self.region_name = os.environ['AWS_S3_REGION_NAME']
         self.aws_access_key_id = os.environ['AWS_S3_KEY_ID']
         self.aws_secret_access_key = os.environ['AWS_S3_KEY']
@@ -40,20 +39,24 @@ class BotoS3Interactor(BasicBotoS3):
                                 message="failed in authenticated of S3 instance")
 
     def upload_file(self,
+                    bucket_path: str,
                     file_path: str,
                     file_path_new: str):
-        self.s3.Bucket(self.bucket_path)\
+        self.s3.Bucket(bucket_path)\
             .upload_file(Key=file_path, Filename=file_path_new,)
 
     def download_file(self,
+                      bucket_path: str,
                       file_path: str,
                       file_path_new: str):
-        self.s3.Bucket(self.bucket_path)\
+        self.s3.Bucket(bucket_path)\
             .download_file(Key=file_path, Filename=file_path_new,)
 
-    def has_file(self, file_path: str):
+    def has_file(self,
+                 bucket_path: str,
+                 file_path: str):
         try:
-            file = self.s3.Bucket(self.bucket_path).Object(file_path).get()
+            file = self.s3.Bucket(bucket_path).Object(file_path).get()
 
             if file['Body']:
                 return True
