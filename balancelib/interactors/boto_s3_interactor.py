@@ -1,6 +1,7 @@
 import os
 
 import boto3
+import botocore
 from dotenv import load_dotenv
 
 from balance_service.interfaces.boto_s3 import BasicBotoS3
@@ -9,7 +10,7 @@ from balancelib.interactors.response_api_interactor import ResponseError
 
 
 class BotoS3Interactor(BasicBotoS3):
-    def __init__(self,):
+    def __init__(self, ):
         self.load_dotenv()
 
         self.region_name = os.environ['AWS_S3_REGION_NAME']
@@ -24,7 +25,7 @@ class BotoS3Interactor(BasicBotoS3):
     def load_dotenv():
         load_dotenv()
 
-    def authenticate(self,):
+    def authenticate(self, ):
         try:
             self.s3 = self.service.resource(
                 service_name="s3",
@@ -44,8 +45,8 @@ class BotoS3Interactor(BasicBotoS3):
                     bucket_path: str,
                     file_path: str,
                     file_path_new: str):
-        self.s3.Bucket(bucket_path)\
-            .upload_file(Key=file_path, Filename=file_path_new,)
+        self.s3.Bucket(bucket_path) \
+            .upload_file(Key=file_path, Filename=file_path_new, )
 
     def download_file(self,
                       bucket_path: str,
@@ -54,9 +55,12 @@ class BotoS3Interactor(BasicBotoS3):
         try:
             self.s3.Bucket(bucket_path) \
                 .download_file(Key=file_path, Filename=file_path_new, )
-        except:
+        except botocore.exceptions.ClientError as e:
+            error_code = e.response['Error']['Code']
+            error_message = e.response['Error']['Message']
             raise ResponseError(status_code=400,
-                                message=f"failed download S3 file {file_path} in {bucket_path}")
+                                message=f"failed download S3 file {file_path} in {bucket_path}: {error_code} - \n"
+                                        f" {error_message}")
 
     def has_file(self,
                  bucket_path: str,
