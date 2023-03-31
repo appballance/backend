@@ -2,11 +2,14 @@ name: FastAPI CI/CD
 
 on:
   push:
+    branches:
       - develop
 
 # The Job defines a series of steps that execute on the same runner.
 jobs:
 # Define the runner used in the workflow
+  workflow_ci:
+    - name: testeee
     runs-on: ubuntu-latest
     steps:
       # Check out repo so our workflow can access it
