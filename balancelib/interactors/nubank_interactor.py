@@ -1,4 +1,6 @@
 import os
+import zipfile
+
 from cachetools import cached, TTLCache
 
 from balance_nubank import Nubank
@@ -28,15 +30,8 @@ class NuBankInteractor(NuBankServiceBasicInterface):
         has_file = s3.has_file(file_path=certificate_url)
 
         if has_file:
-            try:
-                s3.download_file(file_path=certificate_url,
-                                 file_path_new=certificate_url)
-                return True
-            except:
-                raise ResponseError(
-                    message="Failed in download of certificate in bucket",
-                    status_code=400
-                )
+            s3.download_file(file_path=certificate_url,
+                             file_path_new=certificate_url)
         return False
 
     def authenticate(self,
