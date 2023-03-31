@@ -1,10 +1,9 @@
 name: FastAPI CI/CD
 
 on:
-  # Trigger the workflow on push
   push:
       # Push events on main branch
-      - feature/aws-lambda
+      - develop
 
 # The Job defines a series of steps that execute on the same runner.
 jobs:
