@@ -20,7 +20,7 @@ jobs:
           python-version: 3.9
           # optional: architecture: x64 x64 or x86. Defaults to x64 if not specified
 
-      # Step-2 Install Python Virtual ENV
+      # Step-2 Install Python Virtual VENV
       - name: Install Python Virtual ENV
         run: pip3 install virtualenv
 
