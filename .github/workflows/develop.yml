@@ -35,8 +35,6 @@ jobs:
         run: >
           python -m venv venv && source venv/bin/activate && pip3 install --platform manylinux2014_x86_64
           --target=dependencies --implementation cp --python 3.9 --only-binary=:all: --upgrade cryptography
-        if: steps.cache-venv.outputs.cache-hit != 'true'
-
 #      - name: Run Tests
 #        run: . venv/bin/activate && pytest // make test ?
       - name: Create archive of dependencies
