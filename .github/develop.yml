@@ -2,7 +2,7 @@ name: FastAPI CI/CD
 
 on:
   push:
-      # Push events on main branch
+      # Push events on develop branch
       - develop
 
 # The Job defines a series of steps that execute on the same runner.
