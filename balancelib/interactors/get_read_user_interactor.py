@@ -59,20 +59,16 @@ class GetReadUserInteractor:
         )
 
     def _enriched_bank_nubank(self, bank: BankEntity) -> dict:
-        try:
-            nubank_instance = self.get_nubank_instance(
-                token=bank.token,
-                certificate_path=bank.certificate_url, )
+        nubank_instance = self.get_nubank_instance(
+            token=bank.token,
+            certificate_path=bank.certificate_url, )
 
-            new_bank = BasicBankResponseModel(
-                entity_id=bank.id,
-                balance=nubank_instance.get_balance(),
-                code=bank.code
-            )
-            return new_bank.to_json()
-        except:
-            raise ResponseError(status_code=400,
-                                message="Nubank failed instance")
+        new_bank = BasicBankResponseModel(
+            entity_id=bank.id,
+            balance=nubank_instance.get_balance(),
+            code=bank.code
+        )
+        return new_bank.to_json()
 
     def _get_user_banks_formatted(self):
         banks = []
