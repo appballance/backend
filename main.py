@@ -33,7 +33,7 @@ app.add_middleware(
 @app.get("/")
 async def root():
     return {
-        "message": "hellow worldÏ"
+        "message": "hellow world"
     }
 
 app.include_router(user_routes.router)
