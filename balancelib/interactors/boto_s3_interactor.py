@@ -49,8 +49,13 @@ class BotoS3Interactor(BasicBotoS3):
                       bucket_path: str,
                       file_path: str,
                       file_path_new: str):
-        self.s3.Bucket(bucket_path)\
-            .download_file(Key=file_path, Filename=file_path_new,)
+        try:
+            self.s3.Bucket(bucket_path) \
+                .download_file(Key=file_path, Filename=file_path_new, )
+        except:
+            raise ResponseError(status_code=400,
+                                message=f"failed in download S3 file {bucket_path}")
+
 
     def has_file(self,
                  bucket_path: str,
