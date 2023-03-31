@@ -31,7 +31,7 @@ jobs:
           pip3 install -r requirements.txt --platform manylinux2010_x86_64
       - name: Install Cryptography
         run: >
-          python -m venv venv && source venv/bin/activate && pip3 install --platform manylinux2014_x86_64
+          python -m venv venv && source venv/bin/activate && pip3 install --platform=manylinux2014_x86_64
           --target=dependencies --implementation cp --python 3.9 --only-binary=:all: --upgrade cryptography
         if: steps.cache-venv.outputs.cache-hit != 'true'
 
