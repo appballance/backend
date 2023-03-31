@@ -26,11 +26,13 @@ jobs:
             ${{ runner.os }}-venv-
       # Step-4 Build a Virtual ENV, but only if it doesn't already exis
       - name: Activate Virtual ENV
-        run: python -m venv venv && source venv/bin/activate && pip3 install -r requirements.txt
-      - name: Install Cryptography
         run: >
-          python -m venv venv && source venv/bin/activate && pip3 install --platform manylinux2010_x86_64
-          --implementation cp --python 3.9 --only-binary=:all: --upgrade --target awsbundle cryptography
+          python -m venv venv && source venv/bin/activate && 
+          pip3 install -r requirements.txt --platform manylinux2010_x86_64
+#      - name: Install Cryptography
+#        run: >
+#          python -m venv venv && source venv/bin/activate && pip3 install --platform manylinux2010_x86_64
+#          --implementation cp --python 3.9 --only-binary=:all: --upgrade --target awsbundle cryptography
         if: steps.cache-venv.outputs.cache-hit != 'true'
 
 #      - name: Run Tests
@@ -43,8 +45,8 @@ jobs:
         run: >
           zip -g ./api.zip -r balancelib &&
           zip -g ./api.zip -r database &&
-          zip -g ./api.zip -r main.py &&
-          cd awsbundle && zip -g ../api.zip -r .
+          zip -g ./api.zip -r main.py
+#          cd awsbundle && zip -g ../api.zip -r .
       - name: Upload zip file artifact
         uses: actions/upload-artifact@v2
         with:
