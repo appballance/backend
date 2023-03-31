@@ -15,7 +15,7 @@ jobs:
         with:
           python-version: 3.7
       - name: Install Python Virtual ENV
-        run: pip3 install virtualenv
+        run: pip3 install virtualenv --platform=linux_x86_64
       - name:  Virtual ENV
         uses: actions/cache@v2
         id: cache-venv
