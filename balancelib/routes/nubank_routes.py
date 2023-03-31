@@ -19,8 +19,6 @@ from balancelib.interactors.post_generate_certificate import (
 )
 
 from database.adapters.bank import BankAlchemyAdapter
-from database.adapters.user import UserAlchemyAdapter
-
 
 router = APIRouter()
 

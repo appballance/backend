@@ -1,16 +1,12 @@
-import os
-
 from database.adapters.user import UserAlchemyAdapter
 from database.adapters.bank import BankAlchemyAdapter
 
-from balancelib.interactors.boto_s3_interactor import BotoS3Interactor
 from balancelib.interactors.nubank_interactor import NuBankInteractor
 from balancelib.interactors.response_api_interactor import ResponseSuccess
 from balancelib.interactors.get_read_bank_interactor import (
     BasicBankResponseModel
 )
 
-from balance_service.interfaces.boto_s3 import BotoS3
 from balance_service.interfaces.nubank import (
     NuBankServiceInterface,
 )

@@ -2,7 +2,7 @@ from unittest.mock import MagicMock, patch
 
 from pytest import fixture
 
-from balancelib.interactors.get_read_user_interactor import \
+from balancelib import \
     (GetReadUserResponseModel,
      GetReadUserRequestModel,
      GetReadUserInteractor)

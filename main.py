@@ -2,10 +2,10 @@ from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 
+from mangum import Mangum
+
 from balancelib.interactors.response_api_interactor import ResponseError
-from balancelib.routes import nubank_routes
-from balancelib.routes import bank_routes
-from balancelib.routes import user_routes
+from balancelib.routes import nubank_routes, user_routes, bank_routes
 
 from database.settings import create_tables
 
@@ -29,6 +29,15 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+
+@app.get("/")
+async def root():
+    return {
+        "message": "hellow worldÏ"
+    }
+
 app.include_router(user_routes.router)
 app.include_router(bank_routes.router)
 app.include_router(nubank_routes.router)
+
+handler = Mangum(app)

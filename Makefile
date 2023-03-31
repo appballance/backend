@@ -67,5 +67,14 @@ migrate_init:
 	alembic revision --autogenerate -m "migration"
 	@echo "\033[32mMigration started!"
 
+lambda-zip:
+	cd env/lib/python3.9/site-packages && \
+	zip -r9 ../../../../function.zip . && \
+	cd ../../../../ && \
+	zip -g ./function.zip -r balancelib && \
+	zip -g ./function.zip -r database && \
+	zip -g ./function.zip -r main.py
+	@echo "\033[32mLambda api zipped with success!"
+
 migrate:
 	alembic upgrade head
