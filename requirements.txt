@@ -55,3 +55,7 @@ uvicorn==0.14.0
 virtualenv==20.0.31
 virtualenv-clone==0.5.4
 wrapt==1.14.1
+flake8==4.0.1
+flake8-bandit==3.0.0
+pytest==6.2.5
+pytest-cov==3.0.0
