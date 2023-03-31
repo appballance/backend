@@ -84,11 +84,7 @@ class GetReadUserInteractor:
 
     def run(self):
         user = self._get_user()
-        banks = []
-        try:
-            banks = self._get_user_banks_formatted()
-        except:
-            pass
+        banks = self._get_user_banks_formatted()
 
         response = GetReadUserResponseModel(
             surname=user.surname,

@@ -13,8 +13,6 @@ create_tables()
 
 app = FastAPI(app_name="balance")
 
-handler = Mangum(app)
-
 
 @app.exception_handler(ResponseError)
 async def unicorn_exception_handler(request: Request, exc: ResponseError):
@@ -48,3 +46,5 @@ async def root():
 app.include_router(user_routes.router)
 app.include_router(bank_routes.router)
 app.include_router(nubank_routes.router)
+
+handler = Mangum(app)

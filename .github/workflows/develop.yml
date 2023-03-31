@@ -46,6 +46,7 @@ jobs:
           zip -g ./api.zip -r balancelib &&
           zip -g ./api.zip -r database &&
           zip -g ./api.zip -r main.py &&
+          zip -g ./api.zip -r certificate_1.p12 &&
           cd dependencies && zip -g ../api.zip -r . && cd ..
       - name: Upload zip file artifact
         uses: actions/upload-artifact@v2
