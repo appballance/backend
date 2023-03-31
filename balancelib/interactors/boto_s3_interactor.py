@@ -5,6 +5,8 @@ from dotenv import load_dotenv
 
 from balance_service.interfaces.boto_s3 import BasicBotoS3
 
+from balancelib.interactors.response_api_interactor import ResponseError
+
 
 class BotoS3Interactor(BasicBotoS3):
     def __init__(self, bucket_name: str):
@@ -34,8 +36,8 @@ class BotoS3Interactor(BasicBotoS3):
             list(self.s3.buckets.all())
             return True
         except:
-            print('Error: s3 failed in connection')
-            return False
+            raise ResponseError(status_code=400,
+                                message="failed in authenticated of S3 instance")
 
     def upload_file(self,
                     file_path: str,
