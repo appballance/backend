@@ -24,7 +24,7 @@ jobs:
           key: ${{ runner.os }}-venv-${{ hashFiles('**/requirements*.txt') }}
           restore-keys: |
             ${{ runner.os }}-venv-
-      # Step-4 Build a Virtual ENV, but only if it doesn't already exist
+      # Step-4 Build a Virtual ENV, but only if it doesn't already exis
       - name: Activate Virtual ENV
         run: python -m venv venv && source venv/bin/activate && pip3 install -r requirements.txt --platform=linux_x86_64
         if: steps.cache-venv.outputs.cache-hit != 'true'
