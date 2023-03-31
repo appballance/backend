@@ -17,7 +17,7 @@ jobs:
 
       # Step-1 Setup Python
       - name: Set up Python
-        # This action sets up a Python environment for use in actions
+        # This action sets up a Python environment for use in action
         uses: actions/setup-python@v2
         with:
           python-version: 3.9
