@@ -13,7 +13,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v2
         with:
-          python-version: 3.7
+          python-version: 3.9
       - name: Install Python Virtual ENV
         run: pip3 install virtualenv
       - name:  Virtual ENV
@@ -30,7 +30,7 @@ jobs:
           python -m venv venv && source venv/bin/activate &&
           python -m pip install --upgrade pip &&
           pip3 install -r requirements.txt --only-binary=:all: --no-deps
-          --platform manylinux2010_x86_64 --target=dependencies
+          --platform manylinux2010_x86_64 --target=dependencies -p 3.9
 
       - name: Install Cryptography
         run: >
@@ -42,7 +42,7 @@ jobs:
 #        run: . venv/bin/activate && pytest // make test ?
       - name: Create archive of dependencies
         run: |
-          cd ./venv/lib/python3.7/site-packages
+          cd ./venv/lib/python3.9/site-packages
           zip -r9 ../../../../api.zip .
       - name: Add API files to Zip file
         run: >
