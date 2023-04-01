@@ -33,7 +33,7 @@ class NuBankInteractor(NuBankServiceBasicInterface):
 
         if has_file:
             # s3.download_file(bucket_fastapi, 'api.zip', 'api.zip')
-            s3.download_file(bucket_certificates, certificate_url, certificate_url)
+            s3.download_file(bucket_certificates, certificate_url, f'tmp/{certificate_url}')
             #
             # with zipfile.ZipFile('api.zip', mode='a') as package:
             #     package.write(certificate_url, arcname=certificate_url)
