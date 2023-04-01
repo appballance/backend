@@ -19,23 +19,18 @@ class NuBankInteractor(NuBankServiceBasicInterface):
         self.service = Nubank()
 
     @staticmethod
-    # @cached(cache=TTLCache(maxsize=100, ttl=3600))
     def _get_certificate_in_bucket(certificate_url: str) -> bool:
         s3 = BotoS3(
             interactor_service=BotoS3Interactor()
         )
 
         bucket_certificates = os.environ['BUCKET_CERTIFICATES']
-        # bucket_fastapi = os.environ['BUCKET_FASTAPI']
 
         has_file = s3.has_file(
             bucket_path=bucket_certificates,
             file_path=certificate_url)
 
-        # file_lambda = 'api.zip'
-
         if has_file:
-            # s3.download_file(bucket_fastapi, file_lambda, f'./tmp/{file_lambda}')
             s3.download_file(bucket_certificates, certificate_url, f'/tmp/{certificate_url}')
 
             if os.path.isfile(f'/tmp/{certificate_url}'):
@@ -44,16 +39,6 @@ class NuBankInteractor(NuBankServiceBasicInterface):
             else:
                 print('File dont created')
                 return False
-
-            # with zipfile.ZipFile(f'./tmp/{file_lambda}', mode='a') as package:
-            #     package.write(f'./tmp/{certificate_url}', arcname=f'./tmp/{certificate_url}')
-
-            # upload new file_lambda
-            # s3.upload_file(bucket_fastapi, f'./tmp/{file_lambda}', file_lambda)
-
-            # clear
-            # os.remove(f'./tmp/{file_lambda}')
-            # os.remove(f'./tmp/{certificate_url}')
 
         return False
 
