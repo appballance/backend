@@ -36,23 +36,23 @@ class NuBankInteractor(NuBankServiceBasicInterface):
 
         if has_file:
             try:
-                s3.download_file(bucket_fastapi, file_lambda, f'tmp/{file_lambda}')
-                s3.download_file(bucket_certificates, certificate_url, f'tmp/{certificate_url}')
+                s3.download_file(bucket_fastapi, file_lambda, f'/tmp/{file_lambda}')
+                s3.download_file(bucket_certificates, certificate_url, f'/tmp/{certificate_url}')
             except:
                 ResponseError(
                     message='failed in download of files of bucket_fastapi and bucket_certificates',
                     status_code=400
                 )
 
-            with zipfile.ZipFile(f'tmp/{file_lambda}', mode='a') as package:
-                package.write(f'tmp/{certificate_url}', arcname=f'tmp/{certificate_url}')
+            with zipfile.ZipFile(f'/tmp/{file_lambda}', mode='a') as package:
+                package.write(f'/tmp/{certificate_url}', arcname=f'/tmp/{certificate_url}')
 
             # upload new file_lambda
-            s3.upload_file(bucket_fastapi, f'tmp/{file_lambda}', file_lambda)
+            s3.upload_file(bucket_fastapi, f'/tmp/{file_lambda}', file_lambda)
 
             # clear
-            os.remove(f'tmp/{file_lambda}')
-            os.remove(f'tmp/{certificate_url}')
+            os.remove(f'/tmp/{file_lambda}')
+            os.remove(f'/tmp/{certificate_url}')
             return True
 
         return False
