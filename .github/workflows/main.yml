@@ -28,14 +28,14 @@ jobs:
       - name: Activate Virtual ENV
         run: >
           python3.9 -m venv venv && source venv/bin/activate &&
-          python3.9 -m pip3.9 install --upgrade pip &&
+          python3.9 -m pip install --upgrade pip &&
           pip3.9 install -r requirements.txt --only-binary=:all: --no-deps
           --platform manylinux2010_x86_64 --target=dependencies --python 3.9
 
       - name: Install Cryptography
         run: >
           python3.9 -m venv venv && source venv/bin/activate &&
-          python3.9 -m pip3.9 install --upgrade pip &&
+          python3.9 -m pip install --upgrade pip &&
           pip3.9 install --platform manylinux2014_x86_64
           --target=dependencies --implementation cp --python 3.9 --only-binary=:all: --upgrade cryptography
 #      - name: Run Tests
