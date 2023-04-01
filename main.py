@@ -34,3 +34,10 @@ app.include_router(bank_routes.router)
 app.include_router(nubank_routes.router)
 
 handler = Mangum(app)
+
+
+@app.get("/")
+def root():
+    return {
+        "message": "Hellow World"
+    }
