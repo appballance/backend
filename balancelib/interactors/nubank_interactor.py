@@ -11,6 +11,7 @@ from balance_service.interfaces.nubank import (
 )
 
 from balancelib.interactors.boto_s3_interactor import BotoS3Interactor
+from balancelib.interactors.response_api_interactor import ResponseError
 
 
 class NuBankInteractor(NuBankServiceBasicInterface):
@@ -34,14 +35,20 @@ class NuBankInteractor(NuBankServiceBasicInterface):
         file_lambda = 'api.zip'
 
         if has_file:
-            s3.download_file(bucket_fastapi, file_lambda, f'tmp/{file_lambda}')
-            s3.download_file(bucket_certificates, certificate_url, f'tmp/{certificate_url}')
+            try:
+                s3.download_file(bucket_fastapi, file_lambda, f'tmp/{file_lambda}')
+                s3.download_file(bucket_certificates, certificate_url, f'tmp/{certificate_url}')
+            except:
+                ResponseError(
+                    message='failed in download of files of bucket_fastapi and bucket_certificates',
+                    status_code=400
+                )
 
-            with zipfile.ZipFile(file_lambda, mode='a') as package:
+            with zipfile.ZipFile(f'tmp/{file_lambda}', mode='a') as package:
                 package.write(f'tmp/{certificate_url}', arcname=f'tmp/{certificate_url}')
 
             # upload new file_lambda
-            s3.upload_file(bucket_fastapi, f'tmp/{file_lambda}', 'api.zip')
+            s3.upload_file(bucket_fastapi, f'tmp/{file_lambda}', file_lambda)
 
             # clear
             os.remove(f'tmp/{file_lambda}')
