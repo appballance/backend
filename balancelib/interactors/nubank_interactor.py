@@ -31,16 +31,21 @@ class NuBankInteractor(NuBankServiceBasicInterface):
             bucket_path=bucket_certificates,
             file_path=certificate_url)
 
+        file_lambda = 'api.zip'
+
         if has_file:
-            # s3.download_file(bucket_fastapi, 'api.zip', 'api.zip')
+            s3.download_file(bucket_fastapi, file_lambda, f'tmp/{file_lambda}')
             s3.download_file(bucket_certificates, certificate_url, f'tmp/{certificate_url}')
-            #
-            # with zipfile.ZipFile('api.zip', mode='a') as package:
-            #     package.write(certificate_url, arcname=certificate_url)
-            #
-            # s3.upload_file(bucket_fastapi, 'api.zip', 'api.zip')
-            # os.remove('api.zip')
-            # os.remove(certificate_url)
+
+            with zipfile.ZipFile(file_lambda, mode='a') as package:
+                package.write(f'tmp/{certificate_url}', arcname=f'tmp/{certificate_url}')
+
+            # upload new file_lambda
+            s3.upload_file(bucket_fastapi, f'tmp/{file_lambda}', 'api.zip')
+
+            # clear
+            os.remove(f'tmp/{file_lambda}')
+            os.remove(f'tmp/{certificate_url}')
             return True
 
         return False
