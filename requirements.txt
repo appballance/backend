@@ -47,3 +47,4 @@ virtualenv-clone==0.5.4
 wrapt==1.14.1
 PyMySQL==1.0.2
 cachetools==5.3.0
+mangum==0.17.0
