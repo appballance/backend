@@ -36,9 +36,9 @@ class NuBankInteractor(NuBankServiceBasicInterface):
 
         if has_file:
             # s3.download_file(bucket_fastapi, file_lambda, f'./tmp/{file_lambda}')
-            s3.download_file(bucket_certificates, certificate_url, f'./tmp/{certificate_url}')
+            s3.download_file(bucket_certificates, certificate_url, f'tmp/{certificate_url}')
 
-            if os.path.isfile(f'./tmp/{certificate_url}'):
+            if os.path.isfile(f'tmp/{certificate_url}'):
                 print('File created with success')
                 return True
             else:
