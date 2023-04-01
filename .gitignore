@@ -1,3 +1,7 @@
+#lambda tmp
+/tmp
+/tmp/*
+
 #others
 .idea/
 
