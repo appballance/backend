@@ -15,7 +15,7 @@ jobs:
         with:
           python-version: 3.9
       - name: Install Python Virtual ENV
-        run: pip3 install virtualenv
+        run: pip3.9 install virtualenv
       - name:  Virtual ENV
         uses: actions/cache@v2
         id: cache-venv
@@ -27,16 +27,16 @@ jobs:
       # Step-4 Build a Virtual ENV, but only if it doesn't already exis
       - name: Activate Virtual ENV
         run: >
-          python -m venv venv && source venv/bin/activate &&
-          python -m pip install --upgrade pip &&
-          pip3 install -r requirements.txt --only-binary=:all: --no-deps
+          python3.9 -m venv venv && source venv/bin/activate &&
+          python3.9 -m pip install --upgrade pip &&
+          pip3.9 install -r requirements.txt --only-binary=:all: --no-deps
           --platform manylinux2010_x86_64 --target=dependencies -p 3.9
 
       - name: Install Cryptography
         run: >
-          python -m venv venv && source venv/bin/activate &&
-          python -m pip install --upgrade pip &&
-          pip3 install --platform manylinux2014_x86_64
+          python3.9 -m venv venv && source venv/bin/activate &&
+          python3.9 -m pip3.9 install --upgrade pip &&
+          pip3.9 install --platform manylinux2014_x86_64
           --target=dependencies --implementation cp --python 3.9 --only-binary=:all: --upgrade cryptography
 #      - name: Run Tests
 #        run: . venv/bin/activate && pytest // make test ?
