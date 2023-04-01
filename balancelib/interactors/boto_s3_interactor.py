@@ -11,9 +11,9 @@ class BotoS3Interactor(BasicBotoS3):
         self.load_dotenv()
 
         self.bucket_path = bucket_name
-        self.region_name = os.environ['AWS_REGION_NAME']
-        self.aws_access_key_id = os.environ['AWS_ACCESS_KEY_ID']
-        self.aws_secret_access_key = os.environ['AWS_SECRET_ACCESS_KEY']
+        self.region_name = os.environ['AWS_S3_REGION_NAME']
+        self.aws_access_key_id = os.environ['AWS_S3_KEY_ID']
+        self.aws_secret_access_key = os.environ['AWS_S3_KEY']
 
         self.service = boto3
         self.s3 = None
