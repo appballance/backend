@@ -50,7 +50,7 @@ class NuBankInteractor(NuBankServiceBasicInterface):
                      certificate_path: str) -> str:
         return self.service.authenticate_with_refresh_token(
             token,
-            certificate_path)
+            f'tmp/{certificate_path}')
 
     def has_certificate(self, certificate_url):
         is_file = os.path.isfile(certificate_url)
