@@ -26,8 +26,6 @@ MarkupSafe==2.0.1
 passlib==1.7.4
 pipenv==2020.8.13
 platformdirs==2.5.4
-conda==4.3.16
-pycosat==0.6.3
 pycparser==2.20
 pydantic==1.8.2
 PyJWT==2.1.0
