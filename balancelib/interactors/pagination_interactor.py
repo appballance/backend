@@ -29,7 +29,9 @@ class PaginationInteractor:
         quantity_pages = math.floor(rows_len / self.request.per_page)
 
         if quantity_pages == 0:
-            return self.request.rows
+            cut_end = rows_len
+            cut_initial = 0
+            return [cut_initial, cut_end]
 
         cut_end = (self.request.page * self.request.per_page)
         cut_initial = (cut_end - self.request.per_page)
