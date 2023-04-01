@@ -47,7 +47,7 @@ uvicorn==0.14.0
 virtualenv==20.0.31
 virtualenv-clone==0.5.4
 wrapt==1.14.1
-psycopg2-binary==2.9.5
+psycopg2-binary==2.8.6
 PyMySQL==1.0.2
 cachetools==5.3.0
 mangum==0.17.0
