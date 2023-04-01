@@ -27,17 +27,17 @@ jobs:
       # Step-4 Build a Virtual ENV, but only if it doesn't already exis
       - name: Activate Virtual ENV
         run: >
-          python3.9 -m venv venv && source venv/bin/activate &&
-          python3.9 -m pip install --upgrade pip &&
+          python3 -m venv venv && source venv/bin/activate &&
+          python3 -m pip install --upgrade pip &&
           pip3 install -r requirements.txt --only-binary=:all: --no-deps
           --platform manylinux2010_x86_64 --target=dependencies --python 3.9
 
       - name: Install Cryptography
         run: >
-          python3.9 -m venv venv && source venv/bin/activate &&
-          python3.9 -m pip install --upgrade pip &&
-          pip3 install --platform manylinux2014_x86_64
-          --target=dependencies --implementation cp --python 3.9 --only-binary=:all: --upgrade cryptography
+          python3 -m venv venv && source venv/bin/activate &&
+          python3 -m pip install --upgrade pip &&
+          pip3 install --platform manylinux2014_x86_64 --target=dependencies
+          --implementation cp --python 3.9 --only-binary=:all: --upgrade cryptography==38.0.0
 #      - name: Run Tests
 #        run: . venv/bin/activate && pytest // make test ?
       - name: Create archive of dependencies
