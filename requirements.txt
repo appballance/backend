@@ -52,3 +52,4 @@ PyMySQL==1.0.2
 cachetools==5.3.0
 mangum==0.17.0
 fastapi==0.65.2
+pypng==0.20220715.0
