@@ -33,11 +33,11 @@ class NuBankInteractor(NuBankServiceBasicInterface):
         if has_file:
             s3.download_file(bucket_certificates, certificate_url, f'/tmp/{certificate_url}')
 
-            if os.path.isfile(f'/tmp/{certificate_url}'):
-                print('File created with success')
+            if os.path.isfile(f'../../tmp/{certificate_url}'):
+                print(f'WARNING: File {certificate_url} in directory "/tmp" created with success')
                 return True
             else:
-                print('File dont created')
+                print(f'ERROR: File {certificate_url} dont created')
                 return False
 
         return False

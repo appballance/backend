@@ -70,7 +70,10 @@ class BotoS3Interactor(BasicBotoS3):
 
             if file['Body']:
                 return True
-            return False
+            else:
+                print('ERROR - file dont exists: ', file_path)
+
+                return False
         except:
-            print('Error: file dont exists: ', file_path)
+            print('ERROR - failed in get object in S3')
             return False
