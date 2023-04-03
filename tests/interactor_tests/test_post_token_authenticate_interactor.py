@@ -2,10 +2,11 @@ from unittest.mock import MagicMock, patch
 
 from pytest import fixture
 
-from balancelib.interactors import (
+from balancelib.interactors.post_token_authenticate_interactor import (
     PostTokenAuthenticateResponseModel,
     PostTokenAuthenticateRequestModel,
-    PostTokenAuthenticateInteractor,)
+    PostTokenAuthenticateInteractor,
+)
 
 
 @fixture
@@ -27,9 +28,9 @@ def test_post_token_authenticate_response_model():
 def test_post_token_authenticate_response_model_call():
     mock_token = MagicMock()
 
-    result = PostTokenAuthenticateResponseModel(mock_token)
+    result = PostTokenAuthenticateResponseModel(mock_token)()
 
-    assert result() == mock_token
+    assert result.get("token") == mock_token
 
 
 def test_post_token_authenticate_request_model():
@@ -54,16 +55,11 @@ def test_post_token_authenticate_interactor():
 patch_root = 'balancelib.interactors.post_token_authenticate_interactor'
 
 
-@patch(f'{patch_root}.User')
-def test_post_token_authenticate_interactor_get_user_by_email(
-        mock_user,
-        interactor_factory):
+def test_post_token_authenticate_interactor_get_user_by_email(interactor_factory):
     interactor = interactor_factory()
 
     result = interactor._get_user_by_email()
 
-    interactor.adapter.query.assert_called_once_with(mock_user)
-    interactor.adapter.query().filter.assert_called_once_with(False)
-    interactor.adapter.query().filter().first.assert_called_once()
+    interactor.adapter.get_by_email.assert_called_once_with(interactor.request.email)
 
-    assert result == interactor.adapter.query(mock_user).filter(False).first()
+    assert result == interactor.adapter.get_by_email()
