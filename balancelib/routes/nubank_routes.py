@@ -38,7 +38,8 @@ def post_generete_code_by_email(
         bank: RequestSendCodeCertificate,
         user_id: int = Depends(AuthenticateInteractor().auth_wrapper)):
     request = PostGenerateCodeByEmailRequestModel(bank, user_id)
-    interactor = PostGenerateCodeByEmailInteractor(request, BankAlchemyAdapter())
+    interactor = PostGenerateCodeByEmailInteractor(request,
+                                                   BankAlchemyAdapter())
 
     result = interactor.run()
     myClass.func = interactor._get_instance_certificate()
@@ -52,7 +53,11 @@ def nubank_auth_code(
         user_id: int = Depends(AuthenticateInteractor().auth_wrapper)):
     request = PostGenerateCertificateRequestModel(bank, user_id)
     adapter = BankAlchemyAdapter()
-    interactor = PostGenerateCertificateInteractor(request, adapter, myClass.func)
+    interactor = PostGenerateCertificateInteractor(
+        request,
+        adapter,
+        myClass.func,
+    )
 
     result = interactor.run()
 

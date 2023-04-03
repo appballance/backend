@@ -2,7 +2,10 @@ import uuid
 
 from balance_nubank.utils.certificate_generator import CertificateGenerator
 
-from balancelib.interactors.response_api_interactor import ResponseSuccess, ResponseError
+from balancelib.interactors.response_api_interactor import (
+    ResponseSuccess,
+    ResponseError,
+)
 
 from database.adapters.bank import BankAlchemyAdapter
 

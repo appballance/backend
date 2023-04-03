@@ -2,7 +2,10 @@ from balance_domain.entities.bank import BankEntity
 from balance_service.interfaces.nubank import NuBankServiceInterface
 
 from balancelib.interactors.nubank_interactor import NuBankInteractor
-from balancelib.interactors.pagination_interactor import PaginationInteractor, PaginationRequest
+from balancelib.interactors.pagination_interactor import (
+    PaginationInteractor,
+    PaginationRequest
+)
 from balancelib.interactors.response_api_interactor import (
     ResponseSuccess,
     ResponseError
@@ -22,7 +25,8 @@ class BasicTransactionResponse:
         self.address = self.formatted_address(address)
         self.date = date
         self.type_payment = self.formatted_method_payment(type_payment)
-        self.type_transaction = self.formatted_type_transaction(type_transaction)
+        self.type_transaction = self.formatted_type_transaction(
+            type_transaction)
 
     @staticmethod
     def formatted_method_payment(type_payment: str) -> str:
@@ -42,7 +46,8 @@ class BasicTransactionResponse:
         if place_cut == -1:
             return type_transaction
 
-        type_transaction_formatted = type_transaction[(place_cut + 1):len(type_transaction)]
+        type_transaction_formatted = type_transaction[
+                                     (place_cut + 1):len(type_transaction)]
 
         if type_transaction_formatted == 'enviada':
             return 'expense'

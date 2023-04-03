@@ -1,10 +1,11 @@
 from unittest.mock import MagicMock, patch
 from pytest import fixture, raises
 
-from balancelib.interactors import (
+from balancelib.interactors.post_create_user_interactor import (
     PostCreateUserResponseModel,
     PostCreateUserRequestModel,
-    PostCreateUserInteractor)
+    PostCreateUserInteractor
+)
 
 
 @fixture
@@ -13,6 +14,7 @@ def interactor_factory():
                            mock_adapter=MagicMock()):
         return PostCreateUserInteractor(mock_request,
                                         mock_adapter)
+
     return request_interactor
 
 
@@ -59,18 +61,14 @@ def test_post_create_user_interactor(interactor_factory):
 patch_root = 'balancelib.interactors.post_create_user_interactor'
 
 
-@patch(f'{patch_root}.User')
-def test_post_create_user_interactor_get_user_by_email(mock_user,
-                                                       interactor_factory):
+def test_post_create_user_interactor_get_user_by_email(interactor_factory):
     interactor = interactor_factory()
 
     result = interactor._get_user_by_email()
 
-    interactor.adapter.query.assert_called_once_with(mock_user)
-    interactor.adapter.query().filter.assert_called_once_with(False)
-    interactor.adapter.query().filter().first.assert_called_once()
+    mock_user = interactor.adapter.get_by_email()
 
-    assert result == interactor.adapter.query().filter().first()
+    assert result == mock_user
 
 
 @patch.object(PostCreateUserInteractor, '_get_user_by_email')
@@ -105,28 +103,26 @@ def test_post_create_user_interactor_password_match(interactor_factory):
         interactor._password_match()
 
 
-@patch(f'{patch_root}.User')
+@patch(f'{patch_root}.UserEntity')
 @patch(f'{patch_root}.AuthenticateInteractor')
 def test_post_create_user_interactor_create_user(mock_auth,
-                                                 mock_function_user,
+                                                 mock_user_entity,
                                                  interactor_factory):
     interactor = interactor_factory()
 
     result = interactor._create_user()
 
-    mock_auth().get_password_hash(interactor.request.password1)
+    mock_hashed_password = mock_auth().get_password_hash(interactor.request.password1)
 
-    mock_user = mock_function_user(surname=interactor.request.surname,
-                                   fullname=interactor.request.fullname,
-                                   email=interactor.request.email,
-                                   hashed_password=interactor.request.
-                                   hashed_password,)
+    mock_user_entity_response = mock_user_entity(
+        surname=interactor.request.surname,
+        fullname=interactor.request.fullname,
+        email=interactor.request.email,
+        password=mock_hashed_password,)
 
-    interactor.adapter.add(mock_user)
-    interactor.adapter.commit()
-    interactor.adapter.refresh(mock_user)
+    mock_user_created = interactor.adapter.create(mock_user_entity_response)
 
-    assert result == mock_user
+    assert result == mock_user_created
 
 
 @patch.object(PostCreateUserInteractor, '_create_user')
@@ -138,7 +134,6 @@ def test_post_create_user_interactor_run(mock_response,
                                          mock_password_match,
                                          mock_create_user,
                                          interactor_factory):
-
     interactor = interactor_factory()
 
     result = interactor.run()
