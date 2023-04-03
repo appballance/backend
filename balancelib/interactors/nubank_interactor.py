@@ -1,7 +1,4 @@
 import os
-import zipfile
-
-from cachetools import cached, TTLCache
 
 from balance_nubank import Nubank
 
@@ -11,7 +8,6 @@ from balance_service.interfaces.nubank import (
 )
 
 from balancelib.interactors.boto_s3_interactor import BotoS3Interactor
-from balancelib.interactors.response_api_interactor import ResponseError
 
 
 class NuBankInteractor(NuBankServiceBasicInterface):
@@ -31,10 +27,13 @@ class NuBankInteractor(NuBankServiceBasicInterface):
             file_path=certificate_url)
 
         if has_file:
-            s3.download_file(bucket_certificates, certificate_url, f'/tmp/{certificate_url}')
+            s3.download_file(bucket_certificates, certificate_url,
+                             f'/tmp/{certificate_url}')
 
             if os.path.isfile(f'../../tmp/{certificate_url}'):
-                print(f'WARNING: File {certificate_url} in directory "/tmp" created with success')
+                print(
+                    f'WARNING: File {certificate_url}'
+                    f'in directory "/tmp" created with success')
                 return True
             else:
                 print(f'ERROR: File {certificate_url} dont created')

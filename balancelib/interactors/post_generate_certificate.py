@@ -47,8 +47,10 @@ class PostGenerateCertificateInteractor:
 
     def _check_send_code_by_email(self):
         if self.certificate is None:
-            raise ResponseError(status_code=400,
-                                message="Generate the code of certificate first")
+            raise ResponseError(
+                status_code=400,
+                message="Generate the code of certificate first"
+            )
         self.cpf = self.certificate.login
         self.password = self.certificate.password
 
@@ -68,15 +70,17 @@ class PostGenerateCertificateInteractor:
             cert_file.write(certificate_file.export())
 
         s3 = BotoS3(
-            interactor_service=BotoS3Interactor(
-                bucket_name=os.environ['BUCKET_CERTIFICATES']
-            )
+            interactor_service=BotoS3Interactor()
         )
 
-        has_file = s3.has_file(file_path=certificate_path)
+        has_file = s3.has_file(
+            bucket_path=os.environ['BUCKET_CERTIFICATES'],
+            file_path=certificate_path,
+        )
 
         if not has_file:
             s3.upload_file(
+                bucket_path=os.environ['BUCKET_CERTIFICATES'],
                 file_path=certificate_path,
                 file_path_new=certificate_path,
             )
@@ -90,9 +94,9 @@ class PostGenerateCertificateInteractor:
         )
         return token_nubank
 
-    def _conect_with_nubank(self,
-                            token_nubank: str,
-                            certificate_url: str):
+    def _connect_with_nubank(self,
+                             token_nubank: str,
+                             certificate_url: str):
         bank_entity = BankEntity(
             token=token_nubank,
             code=self.request.bank.code,
@@ -112,7 +116,7 @@ class PostGenerateCertificateInteractor:
 
         token_nubank = self._get_token_nubank(certificate_path)
 
-        bank = self._conect_with_nubank(token_nubank, certificate_path)
+        bank = self._connect_with_nubank(token_nubank, certificate_path)
 
         response = PostGenerateCertificateResponseModel(bank)
         return response

@@ -1,6 +1,8 @@
 from fastapi import APIRouter, Depends
 
-from balancelib.interactors.authenticate_interactor import AuthenticateInteractor
+from balancelib.interactors.authenticate_interactor import (
+    AuthenticateInteractor,
+)
 from balancelib.interactors.get_read_bank_interactor import (
     GetReadBankRequestModel,
     GetReadBankInteractor

@@ -27,7 +27,6 @@ from balancelib.schemas.user_schemas import (
 from database.adapters.user import UserAlchemyAdapter
 from database.adapters.bank import BankAlchemyAdapter
 
-
 router = APIRouter()
 
 
@@ -45,7 +44,11 @@ def post_create_user(user: AuthRegister):
 def get_read_user(
         user_id: int = Depends(AuthenticateInteractor().auth_wrapper)):
     request = GetReadUserRequestModel(user_id)
-    interactor = GetReadUserInteractor(request, UserAlchemyAdapter(), BankAlchemyAdapter())
+    interactor = GetReadUserInteractor(
+        request,
+        UserAlchemyAdapter(),
+        BankAlchemyAdapter()
+    )
 
     result = interactor.run()
 

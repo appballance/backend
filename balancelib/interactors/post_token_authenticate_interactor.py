@@ -42,13 +42,19 @@ class PostTokenAuthenticateInteractor:
     @staticmethod
     def _check_user_not_exists(user: UserEntity):
         if user is None:
-            raise ResponseError(message="Email ou senha incorreto", status_code=400)
+            raise ResponseError(
+                message="Email ou senha incorreto",
+                status_code=400,
+            )
 
     def _verify_password(self, user: UserEntity):
         if not AuthenticateInteractor().verify_password(
                 self.request.password,
                 user.password):
-            raise ResponseError(message="Email ou senha incorretod", status_code=400)
+            raise ResponseError(
+                message="Email ou senha incorretod",
+                status_code=400,
+            )
 
     @staticmethod
     def _generate_token(user: UserEntity):
