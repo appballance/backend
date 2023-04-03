@@ -27,13 +27,10 @@ class NuBankInteractor(NuBankServiceBasicInterface):
             file_path=certificate_url)
 
         if has_file:
-            s3.download_file(
-                bucket_certificates,
-                certificate_url,
-                f'tmp/{certificate_url}',
-            )
+            s3.download_file(bucket_certificates, certificate_url,
+                             f'/tmp/{certificate_url}')
 
-            if os.path.isfile(f'tmp/{certificate_url}'):
+            if os.path.isfile(f'../../tmp/{certificate_url}'):
                 print(
                     f'WARNING: File {certificate_url}'
                     f'in directory "/tmp" created with success')
@@ -49,7 +46,7 @@ class NuBankInteractor(NuBankServiceBasicInterface):
                      certificate_path: str) -> str:
         return self.service.authenticate_with_refresh_token(
             token,
-            f'tmp/{certificate_path}')
+            f'/tmp/{certificate_path}')
 
     def has_certificate(self, certificate_url):
         is_file = os.path.isfile(certificate_url)
