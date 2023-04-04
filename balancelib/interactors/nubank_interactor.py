@@ -13,7 +13,7 @@ from balancelib.interactors.boto_s3_interactor import BotoS3Interactor
 class NuBankInteractor(NuBankServiceBasicInterface):
     def __init__(self):
         self.service = Nubank()
-        self.folder_certificates = os.environ['FOLDER_CERTIFICATES']
+        self.folder_certificates = os.environ['FOLDER_TEMPORARY']
 
     def _get_certificate_in_bucket(self, certificate_url: str) -> bool:
         s3 = BotoS3(
@@ -27,10 +27,12 @@ class NuBankInteractor(NuBankServiceBasicInterface):
             file_path=certificate_url)
 
         if has_file:
-            s3.download_file(bucket_certificates, certificate_url,
+            s3.download_file(bucket_certificates,
+                             certificate_url,
                              f'{self.folder_certificates}/{certificate_url}')
 
-            if os.path.isfile(f'{self.folder_certificates}/{certificate_url}'):
+            if os.path.isfile(
+                    f'../../{self.folder_certificates}/{certificate_url}'):
                 print(
                     f'WARNING: File {certificate_url} in directory '
                     f'"{self.folder_certificates}" created with success')
