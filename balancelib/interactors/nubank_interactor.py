@@ -32,7 +32,7 @@ class NuBankInteractor(NuBankServiceBasicInterface):
                              f'{self.folder_certificates}/{certificate_url}')
 
             if os.path.isfile(
-                    f'../../{self.folder_certificates}/{certificate_url}'):
+                    f'{self.folder_certificates}/{certificate_url}'):
                 print(
                     f'WARNING: File {certificate_url} in directory '
                     f'"{self.folder_certificates}" created with success')
