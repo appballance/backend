@@ -20,12 +20,17 @@ class UserAlchemyAdapter(UserRepositorie, ConnectionDatabase):
         self.session.add(user)
         self.session.commit()
         self.session.refresh(user)
+        self.session.close()
         return user
 
     def get_by_id(self, user_id: int):
-        user = self.session.query(UserModel).filter(UserModel.id == user_id).first()
+        user = self.session.query(UserModel).filter(
+            UserModel.id == user_id).first()
+        self.session.close()
         return user
 
     def get_by_email(self, user_email: str):
-        user = self.session.query(UserModel).filter(UserModel.email == user_email).first()
+        user = self.session.query(UserModel).filter(
+            UserModel.email == user_email).first()
+        self.session.close()
         return user
