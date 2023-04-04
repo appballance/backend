@@ -22,14 +22,17 @@ class BankAlchemyAdapter(
         self.session.add(bank)
         self.session.commit()
         self.session.refresh(bank)
+        self.session.close()
         return bank
 
     def get_by_id(self, bank_id: int) -> BankEntity:
         banks = self.session.query(BankModel).filter(BankModel.id == bank_id).first()
+        self.session.close()
         return banks
 
     def get_by_user_id(self, user_id: str):
         banks = self.session.query(BankModel).filter(BankModel.user_id == user_id).all()
+        self.session.close()
         return banks
 
     def user_has_bank(self,
@@ -39,6 +42,7 @@ class BankAlchemyAdapter(
             BankModel.code == bank_code,
             BankModel.user_id == user_id,
         ).first()
+        self.session.close()
 
         if banks is None:
             return False
