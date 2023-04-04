@@ -136,6 +136,7 @@ dmypy.json
 *.p12
 *.db
 
+.DS_Store
 */.DS_Store
 balancelib/.DS_Store
 a/.DS_Store
