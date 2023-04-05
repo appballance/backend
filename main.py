@@ -5,7 +5,12 @@ from fastapi.middleware.cors import CORSMiddleware
 from mangum import Mangum
 
 from balancelib.interactors.response_api_interactor import ResponseError
-from balancelib.routes import user_routes, bank_routes, nubank_routes
+from balancelib.routes import (
+    user_routes,
+    bank_routes,
+    nubank_routes,
+    banco_original_routes
+)
 
 from database.settings import create_tables
 
@@ -21,6 +26,7 @@ async def unicorn_exception_handler(request: Request, exc: ResponseError):
         content=exc.error(),
     )
 
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -32,5 +38,6 @@ app.add_middleware(
 app.include_router(user_routes.router)
 app.include_router(bank_routes.router)
 app.include_router(nubank_routes.router)
+app.include_router(banco_original_routes.router)
 
 handler = Mangum(app)
