@@ -44,6 +44,7 @@ class PostGenerateCertificateInteractor:
         self.request = request
         self.adapter = adapter
         self.certificate = certificate
+        self.folder_certificates = os.environ['FOLDER_TEMPORARY']
 
     def _check_send_code_by_email(self):
         if self.certificate is None:
@@ -109,14 +110,15 @@ class PostGenerateCertificateInteractor:
     def run(self):
         self._check_send_code_by_email()
 
-        certificate_path = f'certificate_{self.request.user_id}.p12'
+        certificate_filename = f'certificate_{self.request.user_id}.p12'
+        certificate_path = f'{self.folder_certificates}/{certificate_filename}'
         certificate_file = self._get_certificate()
 
         self._save_certificate(certificate_file, certificate_path)
 
         token_nubank = self._get_token_nubank(certificate_path)
 
-        bank = self._connect_with_nubank(token_nubank, certificate_path)
+        bank = self._connect_with_nubank(token_nubank, certificate_filename)
 
         response = PostGenerateCertificateResponseModel(bank)
         return response
