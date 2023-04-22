@@ -45,6 +45,10 @@ class PostGenerateCertificateInteractor:
         self.adapter = adapter
         self.certificate = certificate
         self.folder_certificates = os.environ['FOLDER_TEMPORARY']
+        self.certificate_filename = \
+            f'certificate_{self.request.user_id}.p12'
+        self.certificate_path = \
+            f'{self.folder_certificates}/{self.certificate_filename}'
 
     def _check_send_code_by_email(self):
         if self.certificate is None:
@@ -61,11 +65,11 @@ class PostGenerateCertificateInteractor:
         )
         return self.cert1
 
-    @staticmethod
-    def _save_certificate(certificate_file,
-                          certificate_path):
+    def _save_certificate(self, certificate_file):
         load_dotenv()
-        path = os.path.join(os.getcwd(), certificate_path)
+        path = os.path.join(
+            os.getcwd(),
+            self.certificate_path)
 
         with open(path, 'wb') as cert_file:
             cert_file.write(certificate_file.export())
@@ -76,14 +80,14 @@ class PostGenerateCertificateInteractor:
 
         has_file = s3.has_file(
             bucket_path=os.environ['BUCKET_CERTIFICATES'],
-            file_path=certificate_path,
+            file_path=self.certificate_filename,
         )
 
         if not has_file:
             s3.upload_file(
                 bucket_path=os.environ['BUCKET_CERTIFICATES'],
-                file_path=certificate_path,
-                file_path_new=certificate_path,
+                file_path=self.certificate_filename,
+                file_path_new=self.certificate_path,
             )
 
     def _get_token_nubank(self, certificate_path):
@@ -110,15 +114,15 @@ class PostGenerateCertificateInteractor:
     def run(self):
         self._check_send_code_by_email()
 
-        certificate_filename = f'certificate_{self.request.user_id}.p12'
-        certificate_path = f'{self.folder_certificates}/{certificate_filename}'
-        certificate_file = self._get_certificate()
+        self._save_certificate(
+            self._get_certificate()
+        )
 
-        self._save_certificate(certificate_file, certificate_path)
+        token_nubank = self._get_token_nubank(self.certificate_path)
 
-        token_nubank = self._get_token_nubank(certificate_path)
-
-        bank = self._connect_with_nubank(token_nubank, certificate_filename)
+        bank = self._connect_with_nubank(
+            token_nubank,
+            self.certificate_filename)
 
         response = PostGenerateCertificateResponseModel(bank)
         return response
