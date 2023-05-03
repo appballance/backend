@@ -14,22 +14,22 @@ class NuBankInteractor(NuBankServiceBasicInterface):
     def __init__(self):
         self.service = Nubank()
         self.folder_certificates = os.environ['FOLDER_TEMPORARY']
+        self.bucket_certificates = os.environ['BUCKET_CERTIFICATES']
 
     def _get_certificate_in_bucket(self, certificate_url: str) -> bool:
-        s3 = BotoS3(
+        instance = BotoS3(
             interactor_service=BotoS3Interactor()
         )
 
-        bucket_certificates = os.environ['BUCKET_CERTIFICATES']
-
-        has_file = s3.has_file(
-            bucket_path=bucket_certificates,
+        has_file = instance.has_file(
+            bucket_name=self.bucket_certificates,
             file_path=certificate_url)
 
         if has_file:
-            s3.download_file(bucket_certificates,
-                             certificate_url,
-                             f'{self.folder_certificates}/{certificate_url}')
+            instance.download_file(
+                bucket_name=self.bucket_certificates,
+                file_path=certificate_url,
+                file_path_new=f'{self.folder_certificates}/{certificate_url}',)
 
             if os.path.isfile(
                     f'{self.folder_certificates}/{certificate_url}'):
