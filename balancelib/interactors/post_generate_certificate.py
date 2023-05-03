@@ -79,15 +79,15 @@ class PostGenerateCertificateInteractor:
         )
 
         has_file = s3.has_file(
-            bucket_path=os.environ['BUCKET_CERTIFICATES'],
+            bucket_name=os.environ['BUCKET_CERTIFICATES'],
             file_path=self.certificate_filename,
         )
 
         if not has_file:
             s3.upload_file(
-                bucket_path=os.environ['BUCKET_CERTIFICATES'],
-                file_path=self.certificate_filename,
-                file_path_new=self.certificate_path,
+                bucket_name=os.environ['BUCKET_CERTIFICATES'],
+                file_path=self.certificate_path,
+                file_path_new=self.certificate_filename,
             )
 
     def _get_token_nubank(self, certificate_path):
