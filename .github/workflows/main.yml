@@ -14,8 +14,10 @@ jobs:
         uses: actions/setup-python@v2
         with:
           python-version: 3.9
+
       - name: Install Python Virtual ENV
         run: pip3.9 install virtualenv
+
       - name:  Virtual ENV
         uses: actions/cache@v2
         id: cache-venv
@@ -24,7 +26,7 @@ jobs:
           key: ${{ runner.os }}-venv-${{ hashFiles('**/requirements*.txt') }}
           restore-keys: |
             ${{ runner.os }}-venv-
-      # Step-4 Build a Virtual ENV, but only if it doesn't already exis
+
       - name: Activate Virtual ENV
         run: >
           python3 -m venv venv && source venv/bin/activate &&
@@ -32,12 +34,6 @@ jobs:
           pip3 install -r requirements.txt --only-binary=:all: --no-deps
           --platform manylinux2010_x86_64 --target=dependencies --python 3.9
 
-      - name: Install Cryptography
-        run: >
-          python3 -m venv venv && source venv/bin/activate &&
-          python3 -m pip install --upgrade pip &&
-          pip3 install --platform manylinux2014_x86_64 --target=dependencies
-          --implementation cp --python 3.9 --only-binary=:all: --upgrade cryptography==38.0.0
       - name: Run Tests
         run: >
           python3 -m pytest -s -vv -m "not slow" --cov=tests --cov=balancelib \
@@ -46,16 +42,26 @@ jobs:
           @flake8 balancelib/ --max-complexity=5
           @flake8 tests/ --ignore=S101,S311,F811,S605,S607
           @echo "\033[32mTudo certo!"
+
+      - name: Install Cryptography
+        run: >
+          python3 -m venv venv && source venv/bin/activate &&
+          python3 -m pip install --upgrade pip &&
+          pip3 install --platform manylinux2014_x86_64 --target=dependencies
+          --implementation cp --python 3.9 --only-binary=:all: --upgrade cryptography==38.0.0
+
       - name: Create archive of dependencies
         run: |
           cd ./venv/lib/python3.9/site-packages
           zip -r9 ../../../../api.zip .
+
       - name: Add API files to Zip file
         run: >
           zip -g ./api.zip -r balancelib &&
           zip -g ./api.zip -r database &&
           zip -g ./api.zip -r main.py &&
           cd dependencies && zip -g ../api.zip -r . && cd ..
+
       - name: Upload zip file artifact
         uses: actions/upload-artifact@v2
         with:
