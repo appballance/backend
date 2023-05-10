@@ -4,7 +4,7 @@
 <h1 align="center">API - Balance</h1>
 
 
-API code developed on the Python with tha FastAPI.
+API developed and maintained by Team Balance.
 
 ## 💻 Technologies used
 - [Python](https://www.python.org/)
