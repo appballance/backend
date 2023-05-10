@@ -31,10 +31,9 @@ jobs:
         run: >
           python3 -m venv venv && source venv/bin/activate &&
           python3 -m pip install --upgrade pip &&
-          python3 -m pip install pytest &&
-          python3 -m pip install pytest-cov &&
-          python3 -m pytest -s -vv -m "not slow" --cov=tests --cov=balancelib \
-          -W ignore::DeprecationWarning --cov-report term-missing:skip-covered
+          python3 -m pip install pytest && python3 -m pip install pytest-cov &&
+          python3 -m pytest -s -vv -m "not slow" --cov=tests --cov=balancelib -W ignore::DeprecationWarning --cov-report term-missing:skip-covered
+
 
       - name: Activate Virtual ENV
         run: >
