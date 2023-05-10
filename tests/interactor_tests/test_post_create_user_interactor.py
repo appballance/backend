@@ -112,13 +112,14 @@ def test_post_create_user_interactor_create_user(mock_auth,
 
     result = interactor._create_user()
 
-    mock_hashed_password = mock_auth().get_password_hash(interactor.request.password1)
+    mock_hashed_password = mock_auth().get_password_hash(
+        interactor.request.password1)
 
     mock_user_entity_response = mock_user_entity(
         surname=interactor.request.surname,
         fullname=interactor.request.fullname,
         email=interactor.request.email,
-        password=mock_hashed_password,)
+        password=mock_hashed_password, )
 
     mock_user_created = interactor.adapter.create(mock_user_entity_response)
 

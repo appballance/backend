@@ -55,8 +55,10 @@ class PostGenerateCodeByEmailInteractor:
         response = self.certificate.request_code()
 
         if response == 'Unauthorized' \
-                or type(response) != str and response.get('password') is not None \
-                or type(response) != str and response.get('login') is not None:
+                or type(response) != str \
+                and response.get('password') is not None \
+                or type(response) != str \
+                and response.get('login') is not None:
             raise ResponseError(
                 message="Dados incorretos!",
                 status_code=401,
