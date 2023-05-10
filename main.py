@@ -9,7 +9,6 @@ from balancelib.routes import (
     user_routes,
     bank_routes,
     nubank_routes,
-    banco_original_routes
 )
 
 from database.settings import create_tables
@@ -38,6 +37,5 @@ app.add_middleware(
 app.include_router(user_routes.router)
 app.include_router(bank_routes.router)
 app.include_router(nubank_routes.router)
-app.include_router(banco_original_routes.router)
 
 handler = Mangum(app)

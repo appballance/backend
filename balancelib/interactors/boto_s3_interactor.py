@@ -38,7 +38,7 @@ class BotoS3Interactor(BasicBotoS3):
                 aws_secret_access_key=self.request.aws_secret_access_key, )
 
             result = True if list(
-                self.instance.instance.buckets.all()) else False
+                self.instance.buckets.all()) else False
             return result
         except Exception:
             raise ResponseError(

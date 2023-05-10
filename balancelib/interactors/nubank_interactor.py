@@ -1,4 +1,5 @@
 import os
+import boto3
 
 from balance_nubank import Nubank
 
@@ -7,7 +8,10 @@ from balance_service.interfaces.nubank import (
     NuBankServiceBasicInterface,
 )
 
-from balancelib.interactors.boto_s3_interactor import BotoS3Interactor
+
+from balancelib.interactors.boto_s3_interactor import (
+    BotoS3Interactor,
+    BotoS3RequestModel, )
 
 
 class NuBankInteractor(NuBankServiceBasicInterface):
@@ -17,8 +21,16 @@ class NuBankInteractor(NuBankServiceBasicInterface):
         self.bucket_certificates = os.environ['BUCKET_CERTIFICATES']
 
     def _get_certificate_in_bucket(self, certificate_url: str) -> bool:
+        request = BotoS3RequestModel(
+            region_name=os.environ['AWS_S3_REGION_NAME'],
+            aws_access_key_id=os.environ['AWS_S3_KEY_ID'],
+            aws_secret_access_key=os.environ['AWS_S3_KEY'],
+        )
         instance = BotoS3(
-            interactor_service=BotoS3Interactor()
+            interactor_service=BotoS3Interactor(
+                request=request,
+                service=boto3,
+            )
         )
 
         has_file = instance.has_file(
