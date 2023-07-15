@@ -34,7 +34,7 @@ myClass = MyClass()
 
 
 @router.post('/nubank/send-email-code')
-def post_generete_code_by_email(
+def post_generate_code_by_email(
         bank: RequestSendCodeCertificate,
         user_id: int = Depends(AuthenticateInteractor().auth_wrapper)):
     request = PostGenerateCodeByEmailRequestModel(bank, user_id)

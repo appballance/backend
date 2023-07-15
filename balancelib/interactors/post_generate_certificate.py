@@ -1,14 +1,16 @@
 import os
 import uuid
 
+import boto3
 from dotenv import load_dotenv
-from balance_nubank import Nubank
-from balance_nubank.utils.certificate_generator import CertificateGenerator
+from pynubank import Nubank
+from pynubank.utils.certificate_generator import CertificateGenerator
 
 from database.adapters.bank import BankAlchemyAdapter
 
 from balancelib.interactors.boto_s3_interactor import (
     BotoS3Interactor,
+    BotoS3RequestModel,
 )
 
 from balancelib.interactors.response_api_interactor import (
@@ -75,7 +77,14 @@ class PostGenerateCertificateInteractor:
             cert_file.write(certificate_file.export())
 
         s3 = BotoS3(
-            interactor_service=BotoS3Interactor()
+            interactor_service=BotoS3Interactor(
+                request=BotoS3RequestModel(
+                    region_name=os.environ['AWS_S3_REGION_NAME'],
+                    aws_access_key_id=os.environ['AWS_S3_KEY_ID'],
+                    aws_secret_access_key=os.environ['AWS_S3_KEY'],
+                ),
+                service=boto3
+            )
         )
 
         has_file = s3.has_file(
