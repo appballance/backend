@@ -1,6 +1,6 @@
 import uuid
 
-from balance_nubank.utils.certificate_generator import CertificateGenerator
+from pynubank.utils.certificate_generator import CertificateGenerator
 
 from balancelib.interactors.response_api_interactor import (
     ResponseSuccess,
@@ -51,7 +51,7 @@ class PostGenerateCodeByEmailInteractor:
                 status_code=200,
             )
 
-    def _generete_code(self):
+    def _generate_code(self):
         response = self.certificate.request_code()
 
         if response == 'Unauthorized' \
@@ -70,6 +70,6 @@ class PostGenerateCodeByEmailInteractor:
 
     def run(self):
         self._check_bank_connect()
-        send_to = self._generete_code()
+        send_to = self._generate_code()
         response = PostGenerateCodeByEmailResponseModel(send_to)
         return response
