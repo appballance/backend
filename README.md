@@ -1,7 +1,7 @@
 <p align="center" >
 <img src="https://media.licdn.com/dms/image/D4D0BAQHrtVlm9xmaKQ/company-logo_200_200/0/1682187727347?e=1691625600&v=beta&t=GoQLYPFFm2JlpXmrawlM_HZr_Kejhttnyyd0zVITan0" />
 </p>
-<h1 align="center">API - Balance</h1>
+<h1 align="center">Balance</h1>
 
 
 API developed and maintained by Team Balance.
